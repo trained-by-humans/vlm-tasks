@@ -154,17 +154,16 @@ def task_settings(task_name):
     return settings
 
 
-def evaluate(task_name, backend, dataset, config, cache):
+def evaluate(task_name, backend, dataset, cache):
     """Use the same public validator and scoring settings for every backend."""
+    spec = TASKS[task_name]
     settings = task_settings(task_name)
-    if task_name in config.get("task_context", {}):
-        settings["context"] = config["task_context"][task_name]
-    task = getattr(vlm, TASKS[task_name].operator)(backend, **settings)
+    task = getattr(vlm, spec.operator)(backend, **settings)
     options = {"dataset": dataset, "cache_dir": cache}
-    if task_name == "detect":
-        options["match_iou"] = config["match_iou"]
-    if task_name == "describe":
-        options["tokenizer_version"] = config["tokenizer_version"]
+    if spec.match_iou is not None:
+        options["match_iou"] = spec.match_iou
+    if spec.tokenizer_version is not None:
+        options["tokenizer_version"] = spec.tokenizer_version
     return task.val(**options)
 
 

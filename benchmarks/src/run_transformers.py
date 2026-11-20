@@ -97,7 +97,7 @@ def main(argv=None):
             backend = RecordingBackend(vlm.PydanticAIBackend(model, retries=retries), stream)
             settings = task_settings(task_name)
             started = perf_counter()
-            metrics = evaluate(task_name, backend, dataset, config, args.prepared.parent / "downloads")
+            metrics = evaluate(task_name, backend, dataset, args.prepared.parent / "downloads")
             wall_seconds = perf_counter() - started
         if metrics.seen != config["samples_per_task"] or backend.index != metrics.seen:
             raise RuntimeError("Benchmark did not evaluate the requested number of samples")

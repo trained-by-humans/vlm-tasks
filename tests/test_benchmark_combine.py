@@ -76,7 +76,7 @@ def consecutive_runs(tmp_path, request):
             row["prediction"] = {"labels": ["cat"]}
             return ModelResponse(data=row["prediction"])
 
-        metrics = evaluate("classify", backend, data, config, tmp_path / "cache")
+        metrics = evaluate("classify", backend, data, tmp_path / "cache")
         (source / "classify.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
         write_json(source / "classify.json", {
             **({"backend": backend_name} if backend_name == "bedrock" else {}),

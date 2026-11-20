@@ -225,7 +225,7 @@ def main(argv=None):
         with (args.output / f"{task_name}.jsonl").open("w") as stream:
             backend = InfrastructureCheckedBackend(vlm.PydanticAIBackend(model, output_mode=mode, retries=retries), stream)
             started = perf_counter()
-            metrics = evaluate(task_name, backend, loaded[DATASETS[task_name]], config, args.prepared.parent / "downloads")
+            metrics = evaluate(task_name, backend, loaded[DATASETS[task_name]], args.prepared.parent / "downloads")
             wall_seconds = perf_counter() - started
         if metrics.seen != config["samples_per_task"] or backend.index != metrics.seen:
             raise RuntimeError("Benchmark did not evaluate the requested number of samples")

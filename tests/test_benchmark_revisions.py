@@ -14,12 +14,12 @@ from benchmarks.src.task_registry import TASKS
 
 def test_run_setup_saves_selected_specs_and_preserves_checkpoint_revision(tmp_path):
     config = {"model": "test", "revision": 3, "checkpoint_revision": "hf-checkpoint",
-              "tasks": ["classify", "describe"]}
+              "tasks": ["classify", "detect", "describe"]}
     save_run_setup(tmp_path, config)
     assert not (tmp_path / "config.json").exists()
     assert not (tmp_path / "task-specs").exists()
     assert json.loads((tmp_path / "setup_snapshots/model.json").read_text()) == config
-    assert {path.stem for path in (tmp_path / "setup_snapshots").glob("*.json")} == {"model", "classify", "describe"}
+    assert {path.stem for path in (tmp_path / "setup_snapshots").glob("*.json")} == {"model", "classify", "detect", "describe"}
     assert not (tmp_path / "setup_snapshots/task-specs").exists()
     for task in config["tasks"]:
         assert json.loads((tmp_path / "setup_snapshots" / f"{task}.json").read_text()) == json.loads(json.dumps(asdict(TASKS[task])))
@@ -87,4 +87,6 @@ def test_setup_files_declare_independent_positive_revisions():
     assert all(type(spec.revision) is int and spec.revision > 0 for spec in TASKS.values())
     root = Path(__file__).resolve().parents[1]
     for path in (root / "benchmarks/setup/model-configs").glob("*.json"):
-        assert model_config_revision(json.loads(path.read_text())) > 0
+        config = json.loads(path.read_text())
+        assert model_config_revision(config) > 0
+        assert not {"match_iou", "tokenizer_version", "task_context"}.intersection(config)

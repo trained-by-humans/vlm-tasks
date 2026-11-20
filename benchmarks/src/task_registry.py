@@ -22,6 +22,8 @@ class TaskSpec:
     chart_metric_label: str
     geometry: str | None = None
     context: str | None = None
+    match_iou: float | None = None
+    tokenizer_version: str | None = None
 
     @property
     def variation(self):
@@ -42,6 +44,20 @@ def load_task_specs(directory=TASK_SPECS_DIRECTORY):
             spec = TaskSpec(**data)
             if type(spec.revision) is not int or spec.revision < 1:
                 raise ValueError("revision must be a positive integer")
+            if spec.match_iou is not None and (
+                type(spec.match_iou) not in (int, float) or not 0 < spec.match_iou <= 1
+            ):
+                raise ValueError("match_iou must be a number greater than 0 and at most 1")
+            if spec.operator == "Detect" and spec.match_iou is None:
+                raise ValueError("Detect requires match_iou")
+            if spec.tokenizer_version is not None and (
+                not isinstance(spec.tokenizer_version, str) or not spec.tokenizer_version.strip()
+            ):
+                raise ValueError("tokenizer_version must be a nonempty string")
+            if spec.operator == "Describe" and spec.tokenizer_version is None:
+                raise ValueError("Describe requires tokenizer_version")
+            if spec.context is not None and not isinstance(spec.context, str):
+                raise ValueError("context must be a string or null")
             if type(spec.order) is not int or spec.order < 1 or spec.order in orders:
                 raise ValueError("order must be a unique positive integer")
             if any(len(metric) != 2 for metric in spec.metrics) or spec.primary_metric not in dict(spec.metrics):

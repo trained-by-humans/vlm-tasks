@@ -143,7 +143,7 @@ def combine(sources, prepared, output):
                  for segment in segments for row in segment["records"][task]]
         (output / f"{task}.jsonl").write_text("".join(json.dumps(row) + "\n" for row in calls))
         started = perf_counter()
-        metrics = evaluate(task, ReplayBackend(calls), loaded[DATASETS[task]], config, prepared.parent / "downloads")
+        metrics = evaluate(task, ReplayBackend(calls), loaded[DATASETS[task]], prepared.parent / "downloads")
         if metrics.seen != config["samples_per_task"]:
             raise RuntimeError("Rescoring did not cover the full suite")
         source_reports = [segment["reports"][task] for segment in segments]

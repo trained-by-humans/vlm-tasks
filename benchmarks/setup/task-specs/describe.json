@@ -2,6 +2,7 @@
   "revision": 1,
   "order": 7,
   "dataset": "coco_captions2017",
+  "tokenizer_version": "3.4.1",
   "operator": "Describe",
   "title": "Captioning",
   "metrics": [

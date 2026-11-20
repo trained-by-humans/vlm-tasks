@@ -12,6 +12,8 @@ def test_task_specs_preserve_the_benchmark_task_and_axis_order():
     assert TASKS["ground_box"].geometry == "box"
     assert TASKS["ground_point"].geometry == "point"
     assert TASKS["describe"].primary_metric == "rouge_l"
+    assert TASKS["detect"].match_iou == 0.5
+    assert TASKS["describe"].tokenizer_version == "3.4.1"
     assert "10 to 15 words" in TASKS["describe"].context
 
 
@@ -26,6 +28,7 @@ def test_task_specs_load_json_values_in_explicit_order(tmp_path):
     assert list(tasks) == ["z_first", "a_second"]
     assert tasks["z_first"].title == "Custom captions"
     assert tasks["z_first"].context == "Focus on visible text."
+    assert tasks["z_first"].tokenizer_version == "3.4.1"
     assert tasks["z_first"].metrics[-1] == ("rouge_l", "ROUGE-L")
     assert tasks["a_second"].geometry == "point"
 
@@ -34,12 +37,22 @@ def test_task_specs_load_json_values_in_explicit_order(tmp_path):
     {"order": 0}, {"order": True}, {"order": "1"},
     {"revision": 0}, {"revision": True},
     {"revision": "1"}, {"revision": None},
+    {"tokenizer_version": ""}, {"tokenizer_version": None}, {"tokenizer_version": 3.4},
+    {"context": []},
     {"primary_metric": "missing"}, {"metrics": [["rouge_l"]]},
 ])
 def test_task_specs_reject_invalid_revision_order_or_metrics(tmp_path, change):
     data = json.loads((TASK_SPECS_DIRECTORY / "describe.json").read_text())
     (tmp_path / "describe.json").write_text(json.dumps({**data, **change}))
     with pytest.raises(ValueError, match="Invalid task spec"):
+        load_task_specs(tmp_path)
+
+
+@pytest.mark.parametrize("match_iou", [None, True, -0.1, 0, 1.1, "0.5"])
+def test_detection_task_spec_requires_a_valid_matching_threshold(tmp_path, match_iou):
+    data = json.loads((TASK_SPECS_DIRECTORY / "detect.json").read_text())
+    (tmp_path / "detect.json").write_text(json.dumps({**data, "match_iou": match_iou}))
+    with pytest.raises(ValueError, match="match_iou"):
         load_task_specs(tmp_path)
 
 
@@ -51,3 +64,33 @@ def test_task_specs_reject_ambiguous_order_and_missing_definitions(tmp_path):
     (tmp_path / "second.json").write_text(data)
     with pytest.raises(ValueError, match="unique positive integer"):
         load_task_specs(tmp_path)
+
+
+def test_caption_preparation_reads_tokenizer_from_task_spec(tmp_path, monkeypatch):
+    from dataclasses import replace
+    from types import SimpleNamespace
+
+    import datasets
+    from PIL import Image
+
+    from benchmarks.src import prepare_datasets
+    from benchmarks.src.artifacts import write_json
+
+    dataset = datasets.Dataset.from_dict(
+        {"image": [Image.new("RGB", (2, 3), "red")], "captions": [["a red image"]]},
+        features=datasets.Features({"image": datasets.Image(), "captions": [datasets.Value("string")]}),
+    )
+    prepared_versions = []
+    monkeypatch.setattr(prepare_datasets, "TASKS", {
+        "describe": replace(TASKS["describe"], tokenizer_version="custom-version"),
+    })
+    monkeypatch.setattr(prepare_datasets, "DescribeMetrics", lambda **kwargs: SimpleNamespace(
+        prepare=lambda: prepared_versions.append(kwargs["tokenizer_version"]),
+    ))
+    monkeypatch.setattr(prepare_datasets.validation, "load_coco_captions2017", lambda **kwargs: dataset)
+    config = tmp_path / "model.json"
+    write_json(config, {"tasks": ["describe"], "samples_per_task": 1})
+    output = tmp_path / "prepared"
+    assert prepare_datasets.main(["--config", str(config), "--output", str(output)]) == 0
+    assert prepared_versions == ["custom-version"]
+    assert json.loads((output / "manifest.json").read_text())["samples_per_task"] == 1

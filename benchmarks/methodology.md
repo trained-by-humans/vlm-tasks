@@ -76,8 +76,9 @@ Task settings use library defaults, with shared benchmark settings defined in
 [`setup/task-specs/`](setup/task-specs/). Dataset vocabularies
 provide classification/detection labels and attribute choices. Grounding
 receives each expression, and Answer receives each question. Caption scoring
-uses Stanford PTBTokenizer 3.4.1 with its pinned SHA-256; CIDEr document
-frequencies are computed over the selected images. Detailed metric and
+uses the `tokenizer_version` in `describe.json` (Stanford PTBTokenizer 3.4.1
+with its pinned SHA-256); detection uses `match_iou` in `detect.json` (`0.5`).
+CIDEr document frequencies are computed over the selected images. Detailed metric and
 dataset adaptation rules are in [validation](../docs/validation.md).
 
 `ClassifyMultiLabel` has no built-in validation dataset and is excluded. Planned
@@ -154,7 +155,6 @@ describe the published runs rather than requirements of the protocol.
 | `retries` | Nonnegative maximum correction attempts after the initial request; defaults to `0` when omitted | `0`, plus a separate Qwen3-VL-235B run with `2` |
 | Generation settings | Control decoding where the backend supports it; record differences such as provider-controlled sampling | Local greedy decoding with seed 42; hosted settings vary by model |
 | `thinking` (Bedrock, optional) | Pass PydanticAI's reasoning-effort setting to the provider; reasoning counts toward `max_new_tokens` | Claude Fable 5.2: `high` adaptive effort |
-| `match_iou`, `tokenizer_version` | Fix detection matching and caption tokenization for scoring | `0.5` and Stanford PTBTokenizer `3.4.1` |
 
 The Transformers runner uses prompted JSON output. The Bedrock runner accepts
 prompted or native output; see [Native JSON Schema runs](#native-json-schema-runs).
@@ -163,13 +163,13 @@ The library's output modes are described in
 Actual generation configuration, processor or provider settings, output
 instructions and retry allowance are saved in each run's `model.json`.
 
-For prompt experiments, configs can override the shared defaults through a
-`task_context` mapping, such as `{"describe": "Write one detailed paragraph."}`.
-Both runners pass each entry to that task's public `context` argument and
-record the resolved instructions in the request journal. An explicit
-`{"describe": null}` omits the context for reproducing earlier prompts.
-Save prompt experiments under `experiments/`, separately from the benchmark
-protocol. Context does not change the response schema or scoring rules.
+For prompt experiments, change `context` in the relevant task spec and increment
+its `revision`. Both runners pass it to that task's public `context` argument,
+save the task spec in `setup_snapshots/`, and record the resolved instructions
+in the request journal. Setting `context` to `null` omits the extra instructions.
+Model configs do not override task prompts or scoring settings. Save prompt
+experiments under `experiments/`, separately from the benchmark protocol.
+Context does not change the response schema or scoring rules.
 
 For a model comparison, keep the prepared data, task instructions, response
 schemas, scoring, token budget and retry allowance the same, and record any

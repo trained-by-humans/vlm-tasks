@@ -131,11 +131,11 @@ def main(argv=None):
         indices = [r["index"] for r in originals]
         dataset = loaded[DATASETS[task_name]].select(indices)
         cache = args.prepared.parent / "downloads"
-        baseline_metrics = evaluate(task_name, ReplayBackend(originals), dataset, config, cache)
+        baseline_metrics = evaluate(task_name, ReplayBackend(originals), dataset, cache)
         before = len(model.generations)
         with (args.output / f"{task_name}.jsonl").open("w") as stream:
             backend = RecordingBackend(vlm.PydanticAIBackend(model, retries=0), stream)
-            rerun_metrics = evaluate(task_name, backend, dataset, config, cache)
+            rerun_metrics = evaluate(task_name, backend, dataset, cache)
         reruns = [json.loads(line) for line in (args.output / f"{task_name}.jsonl").read_text().splitlines()]
         if len(reruns) != len(originals) or rerun_metrics.seen != len(originals):
             raise RuntimeError("Rerun did not cover every selected sample")

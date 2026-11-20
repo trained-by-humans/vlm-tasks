@@ -255,6 +255,8 @@ def test_capped_rerun_selects_all_and_only_responses_at_limit(tmp_path):
     ("describe", "Describe", None, {"tokenizer_version": "3.4.1"}),
 ])
 def test_shared_evaluation_preserves_task_variants_and_scoring(monkeypatch, tmp_path, task_name, operator, geometry, scoring):
+    from dataclasses import replace
+    from benchmarks.src import evaluation
     from benchmarks.src.evaluation import evaluate
     from ml_pipes import vlm
 
@@ -270,8 +272,10 @@ def test_shared_evaluation_preserves_task_variants_and_scoring(monkeypatch, tmp_
         raise AssertionError("Validation dispatch must not run inference in this test")
 
     dataset = object()
-    config = {"match_iou": .7, "tokenizer_version": "3.4.1"}
-    assert evaluate(task_name, backend, dataset, config, tmp_path) == "metrics"
+    monkeypatch.setattr(evaluation, "TASKS", {
+        **evaluation.TASKS, task_name: replace(evaluation.TASKS[task_name], **scoring),
+    })
+    assert evaluate(task_name, backend, dataset, tmp_path) == "metrics"
     (task, options), = calls
     assert type(task) is task_class
     if geometry:
@@ -279,14 +283,15 @@ def test_shared_evaluation_preserves_task_variants_and_scoring(monkeypatch, tmp_
     assert options == {"dataset": dataset, "cache_dir": tmp_path, **scoring}
 
 
-@pytest.mark.parametrize("overrides, context", [
-    ({}, "Write exactly one sentence of 10 to 15 words describing the main visible "
-         "subject and action. Do not add additional sentences."),
-    ({"describe": None}, None),
-    ({"describe": "Write one detailed paragraph.", "classify": "Unrelated classification context"},
-     "Write one detailed paragraph."),
+@pytest.mark.parametrize("context", [
+    "Write exactly one sentence of 10 to 15 words describing the main visible "
+    "subject and action. Do not add additional sentences.",
+    None,
+    "Write one detailed paragraph.",
 ])
-def test_benchmark_caption_context_changes_only_instructions(tmp_path, monkeypatch, overrides, context):
+def test_benchmark_caption_context_changes_only_instructions(tmp_path, monkeypatch, context):
+    from dataclasses import replace
+    from benchmarks.src import evaluation
     from benchmarks.src.evaluation import evaluate
     from ml_pipes import vlm
     from ml_pipes.vlm.validation._caption_tokenizer import CaptionTokenizer
@@ -314,13 +319,14 @@ def test_benchmark_caption_context_changes_only_instructions(tmp_path, monkeypat
         return predict
 
     original_calls, benchmark_calls = [], []
-    config = {"tokenizer_version": "3.4.1"}
+    monkeypatch.setattr(evaluation, "TASKS", {
+        **evaluation.TASKS, "describe": replace(evaluation.TASKS["describe"], context=context),
+        "classify": replace(evaluation.TASKS["classify"], context="Unrelated classification context"),
+    })
     baseline = vlm.Describe(backend(original_calls)).val(
         dataset=dataset, cache_dir=tmp_path / "cache", tokenizer_version="3.4.1",
     )
-    changed = evaluate("describe", backend(benchmark_calls), dataset, {
-        **config, "task_context": overrides,
-    }, tmp_path / "cache")
+    changed = evaluate("describe", backend(benchmark_calls), dataset, tmp_path / "cache")
     assert changed.results_dict == baseline.results_dict
     assert changed.dataset_counts == baseline.dataset_counts
     assert len(benchmark_calls) == len(original_calls) == 3

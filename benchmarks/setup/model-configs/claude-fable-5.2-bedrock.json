@@ -21,8 +21,6 @@
     "answer",
     "describe"
   ],
-  "tokenizer_version": "3.4.1",
-  "match_iou": 0.5,
   "sdk_total_max_attempts": 1,
   "pricing": {
     "source": "https://aws.amazon.com/bedrock/pricing/",

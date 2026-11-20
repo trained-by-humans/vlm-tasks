@@ -2,6 +2,7 @@
   "revision": 1,
   "order": 2,
   "dataset": "coco128",
+  "match_iou": 0.5,
   "operator": "Detect",
   "title": "Detection",
   "metrics": [

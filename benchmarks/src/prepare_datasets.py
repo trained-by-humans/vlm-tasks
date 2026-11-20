@@ -10,7 +10,7 @@ from ml_pipes.vlm import validation
 from ml_pipes.vlm.validation import DescribeMetrics
 
 from .artifacts import digest, encoded, sample_record, utc_now, write_json
-from .task_registry import DATASETS
+from .task_registry import DATASETS, TASKS
 
 
 def main(argv=None):
@@ -34,7 +34,7 @@ def main(argv=None):
     }
     # Preflight Java and fetch the pinned tokenizer before loading model weights.
     if "describe" in config["tasks"]:
-        DescribeMetrics(tokenizer_version=config["tokenizer_version"], cache_dir=cache).prepare()
+        DescribeMetrics(tokenizer_version=TASKS["describe"].tokenizer_version, cache_dir=cache).prepare()
     manifest = {"created_at": utc_now(), "selection": "first eligible rows in loader source order; no shuffle",
                 "samples_per_task": count, "datasets": {}}
     for name in dict.fromkeys(DATASETS[task] for task in config["tasks"]):

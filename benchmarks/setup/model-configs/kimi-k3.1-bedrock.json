@@ -9,8 +9,6 @@
   "max_new_tokens": 4096,
   "samples_per_task": 100,
   "tasks": ["classify", "detect", "ground_box", "ground_point", "attributes", "answer", "describe"],
-  "tokenizer_version": "3.4.1",
-  "match_iou": 0.5,
   "sdk_total_max_attempts": 1,
   "pricing": {
     "source": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-moonshot-ai-kimi-k3-1-highspeed.html",
