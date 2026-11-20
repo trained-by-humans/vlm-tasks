@@ -180,8 +180,8 @@ enforces. Retry and token-budget comparisons evaluate different inference budget
 as well as task quality.
 
 A fixed output cap bounds repetitive generation, but can truncate valid long
-answers. Increasing it is a separate experiment; see
-[token-budget reproduction](#double-the-budget-for-capped-responses).
+answers. Evaluate larger output budgets as separate experiments on the same
+samples, recording the changed allowance and any additional usage.
 Correction retries keep the same cap and usually do not resolve cap failures;
 see [Correction retry runs](#correction-retry-runs) for when they are useful.
 
@@ -428,26 +428,6 @@ legend identifies each model. Polygon area is not an overall score. The table
 uses the same formatting and usage accounting as the main report, with links
 back to the selected source results. The manifest records selected runs, original
 scores, rendering versions, source and input hashes, and generated file hashes.
-
-### Token-budget reports
-
-If an experiment is stopped, report completed records without loading model
-weights or running further inference:
-
-```bash
-python -m benchmarks.src.report_token_budget \
-  --experiment experiments/token-budget/reproduction \
-  --baseline benchmarks/runs/qwen3-vl-2b-20261112 \
-  --interrupted-requests 1
-```
-
-This writes a partial table and `status.json`, distinguishing completed,
-interrupted and unstarted samples. Counts and token totals in that table cover
-completed cases only; interrupted generation usage is unknown. The
-`--interrupted-requests` value records how many active requests were stopped.
-`--baseline` supplies the current run location when its originally recorded
-path predates a directory move. Paths inside original run and experiment
-artifacts are retained as evidence of their execution environment.
 
 ### Regenerate historical reports
 
@@ -847,39 +827,6 @@ HF_HUB_OFFLINE=0 HF_DATASETS_OFFLINE=0 .venv/bin/python -m benchmarks.src.combin
 
 </details>
 
-### Double the budget for capped responses
-
-<details>
-<summary>View token-budget experiment</summary>
-
-After a local Transformers baseline completes, rerun samples that reached its
-output cap with twice the configured allowance. Save the experiment under
-the repository-root `experiments/` directory, using a fresh output path:
-
-```bash
-python -m benchmarks.src.run_token_budget \
-  --baseline benchmarks/runs/qwen3-vl-2b-20261112 \
-  --prepared benchmarks/.cache/prepared-datasets-100 \
-  --output experiments/token-budget/reproduction --offline
-```
-
-The experiment verifies the dataset fingerprints, keeps the same model revision,
-processor, prompts, seed, dtype and retry policy, and selects only responses
-at the original cap. It records selected sample identities in `selection.json`,
-copies their exact RGB images into `images/<task>/`,
-new requests/responses in task JSONL files, and paired outcomes in
-`comparison.json`. Baseline predictions are replayed through public validation
-without inference to compute baseline scores on that **same selected subset**.
-For caption subsets, both conditions recompute CIDEr IDF on that subset.
-Compare completion, scores, tokens, latency and whether the new cap is reached.
-This is a conditional analysis of capped samples; its scores do not replace
-the 100-sample comparison. It runs after the baseline to avoid concurrent GPU
-use affecting timings.
-
-For partial results after interruption, see [Token-budget reports](#token-budget-reports).
-
-</details>
-
 ## Artifacts
 
 | Artifact | Contents |
@@ -901,8 +848,6 @@ For partial results after interruption, see [Token-budget reports](#token-budget
 | `benchmarks/src/generate_charts.py` | Model radar profiles and task comparison charts from saved reports |
 | `benchmarks/src/chart_style.py` | Shared palette and deterministic model color selection |
 | `benchmarks/src/generate_comparison.py` | On-demand local report for two selected model runs |
-| `benchmarks/src/run_token_budget.py` | Paired 2×-budget reruns of capped samples |
-| `benchmarks/src/report_token_budget.py` | Report completed token-budget records after stopping inference |
 | `runs/<run>/setup_snapshots/model.json` | Model config snapshot, including `revision`, requested tasks, sample count and inference settings |
 | `runs/<run>/setup_snapshots/<task>.json` | Selected task definition snapshot, including `revision` |
 | `runs/<run>/manifest.json` | Dataset identities, targets and image hashes |

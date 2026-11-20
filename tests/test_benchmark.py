@@ -234,17 +234,6 @@ def test_comparison_normalizes_usage_and_rates_by_evaluated_samples(tmp_path, sa
     assert (tmp_path / "reports/report-manifest.json").is_file()
 
 
-def test_capped_rerun_selects_all_and_only_responses_at_limit(tmp_path):
-    from benchmarks.src.run_token_budget import selected_calls
-
-    records = [{"index": 0, "generations": [{"output_tokens": 4095}]},
-               {"index": 1, "generations": [{"output_tokens": 4096}]},
-               {"index": 2, "generations": [], "error": {"type": "ModelExecutionError"}}]
-    (tmp_path / "detect.jsonl").write_text("\n".join(json.dumps(r) for r in records) + "\n")
-    result = selected_calls(tmp_path, {"tasks": ["detect"], "max_new_tokens": 4096})
-    assert [r["index"] for r in result["detect"]] == [1]
-
-
 @pytest.mark.parametrize("task_name, operator, geometry, scoring", [
     ("classify", "Classify", None, {}),
     ("detect", "Detect", None, {"match_iou": .7}),
@@ -435,25 +424,6 @@ def test_report_repeats_the_same_observations_in_model_and_task_views(tmp_path):
     assert "reports/charts/model-profiles/first.png" in page
     assert "reports/charts/task-comparisons/classify.png" in page
     assert "runs/first/classify.json" in page
-
-
-@pytest.mark.parametrize("layout", ["setup_snapshots", ""])
-def test_token_budget_report_accepts_a_relocated_baseline(tmp_path, layout):
-    from benchmarks.src.artifacts import write_json
-    from benchmarks.src.report_token_budget import main
-
-    baseline = tmp_path / "runs/model"
-    experiment = tmp_path / "experiments/token-budget/model"
-    filename = "model.json" if layout else "config.json"
-    write_json(baseline / layout / filename, {"max_new_tokens": 4096})
-    write_json(experiment / "selection.json", {
-        "baseline": "original/path/no-longer-present", "baseline_limit": 4096,
-        "rerun_limit": 8192, "samples": {},
-    })
-    assert main(["--experiment", str(experiment), "--baseline", str(baseline),
-                 "--interrupted-requests", "0"]) == 0
-    assert json.loads((experiment / "status.json").read_text())["completed_samples"] == 0
-    assert "# Token budget experiment (partial)" in (experiment / "README.md").read_text()
 
 
 @pytest.fixture
