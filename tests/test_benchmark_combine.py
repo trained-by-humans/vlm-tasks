@@ -9,9 +9,8 @@ from benchmarks.src.artifacts import (
     digest, encoded, revision_fields, run_config_path, run_task_spec_path,
     sample_record, save_run_setup, write_json,
 )
-from benchmarks.src.combine_runs import checked_segments, combine, global_sample
+from benchmarks.src.combine_runs import checked_segments, combine, combine_usage, global_sample
 from benchmarks.src.evaluation import evaluate, usage_summary as local_usage_summary
-from benchmarks.src.usage import combine_usage
 from ml_pipes.vlm import ModelResponse, ResponseSyntaxError
 
 

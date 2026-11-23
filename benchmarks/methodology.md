@@ -858,8 +858,7 @@ HF_HUB_OFFLINE=0 HF_DATASETS_OFFLINE=0 .venv/bin/python -m benchmarks.src.combin
 | `benchmarks/src/evaluation.py` | Shared validation, frozen-data verification, response recording and replay |
 | `benchmarks/src/artifacts.py` | JSON artifacts, setup snapshots and revision checks, sample identities, content hashes and source provenance |
 | `benchmarks/src/run_transformers.py` | Local model setup, inference and task reports |
-| `benchmarks/src/combine_runs.py` | Verify consecutive local or hosted subsets and rescore their saved responses without inference |
-| `benchmarks/src/usage.py` | Reconcile saved request usage and aggregate totals while preserving unavailable and partial costs |
+| `benchmarks/src/combine_runs.py` | Verify consecutive local or hosted subsets, reconcile and aggregate saved usage, and rescore responses without inference |
 | `benchmarks/src/generate_report.py` | Comparison table and wide CSV generation |
 | `benchmarks/src/generate_charts.py` | Model radar profiles and task comparison charts from saved reports |
 | `benchmarks/src/chart_style.py` | Shared palette and deterministic model color selection |
