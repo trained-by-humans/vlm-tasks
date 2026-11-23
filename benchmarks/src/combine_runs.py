@@ -44,7 +44,8 @@ def check_journal_usage(calls, usage, *, task):
     if any(usage[field] != value for field, value in expected.items() if field in usage):
         raise ValueError(f"Segment usage does not match its request journal: {task}")
     cost = usage.get("estimated_cost_usd")
-    if (cost is None) != (not costs) or (cost is not None and Decimal(cost) != sum(costs, Decimal(0))):
+    expected_cost = sum(costs, Decimal(0)) if costs else None
+    if (Decimal(cost) if cost is not None else None) != expected_cost:
         raise ValueError(f"Segment cost does not match its request journal: {task}")
     if usage.get("estimated_cost_complete") and (len(costs) != attempted or unmeasured):
         raise ValueError(f"Segment claims complete costs with missing usage: {task}")
@@ -143,7 +144,7 @@ def checked_segments(sources, manifest):
             check_journal_usage(calls, report["usage"], task=task)
             reports[task], records[task] = report, calls
         segments.append({"source": source, "count": count, "offset": offset,
-                         "config": config, "model": model, "effective_model": effective,
+                         "config": config, "effective_model": effective, "versioned": versioned,
                          "backend": backend, "reports": reports, "records": records})
         offset += count
     if not segments or offset != manifest["samples_per_task"]:
@@ -159,9 +160,10 @@ def combine(sources, prepared, output):
         raise ValueError("Combined output must be outside the source runs")
     manifest = json.loads((prepared / "manifest.json").read_text())
     segments = checked_segments(sources, manifest)
-    config = {**segments[0]["config"], "samples_per_task": manifest["samples_per_task"]}
+    first = segments[0]
+    config = {**first["config"], "samples_per_task": manifest["samples_per_task"]}
     loaded = load_prepared(prepared, manifest, config["tasks"])
-    if (run_setup_directory(segments[0]["source"]) / "task-specs").is_dir() or isinstance(config.get("revision"), int):
+    if first["versioned"]:
         save_run_setup(output, config)
     else:
         write_json(output / "config.json", config)
@@ -170,11 +172,11 @@ def combine(sources, prepared, output):
     write_json(output / "environment.json", {
         "started_at": utc_now(), "python": platform.python_version(), "platform": platform.platform(),
         "phase": "offline rescoring; inference environments retained in segments/",
-        "backend": segments[0]["backend"],
+        "backend": first["backend"],
         "packages": packages, **provenance(),
     })
     (output / "requirements.txt").write_text("\n".join(f"{k}=={v}" for k, v in sorted(packages.items())) + "\n")
-    write_json(output / "model.json", segments[0]["effective_model"])
+    write_json(output / "model.json", first["effective_model"])
     assembly = {"created_at": utc_now(), "model_requests": 0, "segments": [],
                 "method": "Consecutive frozen subsets; recompute all metrics on the full suite; retain live usage and latency"}
     for index, segment in enumerate(segments):
@@ -201,7 +203,7 @@ def combine(sources, prepared, output):
                                  for segment, report in zip(segments, source_reports)) / metrics.seen
         report = {
             **source_reports[0], "completed_at": utc_now(),
-            "backend": segments[0]["backend"],
+            "backend": first["backend"],
             "execution_environment": "environment.json",
             "inference_environments": [f"segments/{index:03d}/environment.json" for index in range(len(segments))],
             "assembly": "assembly.json", "metrics": metrics.results_dict, "summary": metrics.summary(),
