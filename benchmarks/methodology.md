@@ -15,8 +15,8 @@ scoring. Run the module commands below from the repository root.
 - [Layout and naming](#layout-and-naming)
 - [Task protocols](#task-protocols)
 - [Run parameters](#run-parameters)
-- [Reporting](#reporting)
 - [Runs](#runs)
+- [Reporting](#reporting)
 - [Artifacts](#artifacts)
 - [Interpretation limits](#interpretation-limits)
 
@@ -376,128 +376,6 @@ sample to see what correction changed.
 
 See the [Qwen3-VL-235B retry example](#reproduce-the-retry-example) for a
 complete run.
-
-## Reporting
-
-Build the overview, charts and model comparisons from saved task reports.
-Reporting makes no model requests.
-
-### Generate reports
-
-Generate PNG and editable SVG files using saved reports only:
-
-```bash
-uv pip install --python .venv/bin/python 'matplotlib==3.11.2'
-.venv/bin/python -m benchmarks.src.generate_charts
-```
-
-The chart generator validates that all seven main metrics are present and
-bounded, writes one profile per model/run and one comparison per task, and
-refreshes the report. It performs no inference. `reports/charts/manifest.json`
-records metric choices, exact scores, sample counts, Matplotlib/NumPy versions,
-and source, report, run-completion metadata and figure hashes. Use those package versions to reproduce
-the rendering. The report generator embeds charts only when their report
-hashes and run order match the current results; regenerate charts after adding
-or changing runs or their completion metadata. To refresh only tables and the field guide, run
-`python -m benchmarks.src.generate_report`.
-
-### Model profile charts
-
-The [radar charts](README.md#model-profiles) show one profile per model/run.
-Each axis uses the task's main metric from the report's overview table.
-The [Table field guide](README.md#table-field-guide) explains these metrics.
-Axes have identical order and a fixed radial range of 0–100, using recorded
-scores multiplied by 100. There is no normalization to the best observed
-model or to sample count, and failures retain their scoring penalties.
-
-The chart metrics have a natural 0–1 range. Captioning uses bounded ROUGE-L;
-CIDEr, which is not bounded to 0–1, remains in the tables. Each axis summarizes
-a different task: equal radial values do not imply equal difficulty, and
-polygon area is not an overall model score. Charts compare task quality;
-use the tables to assess quality alongside failures and resource usage.
-
-Model columns, profile grids, task bars and detail tables show the newest
-completed runs first. Ordering uses `completed.json`'s recorded `completed_at`,
-falling back to the latest task completion for unfinished or older runs.
-Undated runs appear last; ties use the run ID. File modification times and
-chart regeneration do not change the order. On-demand pair comparisons keep
-the model order supplied in the command.
-
-Colors come from the shared ten-color palette in
-[`src/chart_style.py`](src/chart_style.py). The first eight bytes of a model ID's
-SHA-256 checksum, interpreted as an unsigned big-endian integer modulo the
-palette length, select its slot. Assignments are independent of run date,
-sample count and retry allowance. Changing palette length or order changes
-assignments. Profiles, task bars and pair comparisons use the same base
-colors; if both comparison curves share a color, the second uses the next
-palette entry, wrapping at the end. Manifests record resolved colors and
-source hashes.
-
-### Task comparison charts
-
-The [task comparisons](README.md#task-comparisons) show one horizontal bar
-chart per task variant, using the same main metrics, model order and colors
-as the model profiles. Bars use the same fixed 0–100 range (recorded metric
-multiplied by 100); no scores are normalized against the observed models.
-
-The chart manifest records each task's metric, original scores, displayed
-model labels and filenames. The report pairs charts with full tables and
-links both views through its overview. Shared field definitions live in the
-[Table field guide](README.md#table-field-guide).
-
-### Compare two models locally
-
-Generate a dedicated report for two models by passing the names shown in the
-benchmark charts. Run from the repository root, using the same Matplotlib setup
-as above:
-
-```bash
-.venv/bin/python -m benchmarks.src.generate_comparison "Qwen3-VL-2B" "Qwen3-VL-235B"
-```
-
-The command reads saved results and writes only the selected pair's report to
-`benchmarks/reports/model-comparisons/<run>--vs--<run>/`. Open its `README.md`
-for the introduction and run configurations, followed by the overlaid radar
-chart and task summary table. Expand **Breakdown** for full metrics and usage;
-its fields follow the main report's
-[Table field guide](README.md#table-field-guide). PNG and SVG images and a
-provenance manifest are saved alongside it. These local outputs
-are gitignored; the main benchmark README and charts are unchanged, and no
-model inference is performed.
-
-Use `--output /path/to/comparison` to choose another output directory, or
-`--runs /path/to/runs` to read another set of recorded runs. Repeating a command
-refreshes that pair's report. List the available names and run IDs with:
-
-```bash
-.venv/bin/python -m benchmarks.src.generate_comparison --list-models
-```
-
-Names are case-insensitive. Full model identifiers and individual profile chart
-titles are also accepted. If a model has multiple recorded runs, pass an exact
-run ID from the list to choose one. Unknown, ambiguous and duplicate selections
-are rejected before report generation.
-
-Overlays use the individual profiles' axis order, fixed scale, recorded scores
-and base colors, without normalization between models. When both colors match,
-the second curve uses the next palette entry. Both lines are solid and a
-legend identifies each model. Polygon area is not an overall score. The table
-uses the same formatting and usage accounting as the main report, with links
-back to the selected source results. The manifest records selected runs, original
-scores, rendering versions, source and input hashes, and generated file hashes.
-
-### Regenerate historical reports
-
-Use the generation commands above with the saved `runs/` archives. Report
-generation reads their metrics and run configs, so it preserves scores from
-the original caption instructions without making new model requests.
-
-To recreate an earlier report's layout and rendering, use a separate checkout
-at that Git revision and the package versions recorded in its chart manifest.
-To rerun inference instead, follow [Runs](#runs) with the run's saved
-`setup_snapshots/model.json` (`config.json` in older runs), task selection and
-sample count from its `config.json`, and recorded source version rather than
-current model templates.
 
 ## Runs
 
@@ -887,6 +765,128 @@ HF_HUB_OFFLINE=0 HF_DATASETS_OFFLINE=0 .venv/bin/python -m benchmarks.src.combin
 ```
 
 </details>
+
+## Reporting
+
+Build the overview, charts and model comparisons from saved task reports.
+Reporting makes no model requests.
+
+### Generate reports
+
+Generate PNG and editable SVG files using saved reports only:
+
+```bash
+uv pip install --python .venv/bin/python 'matplotlib==3.11.2'
+.venv/bin/python -m benchmarks.src.generate_charts
+```
+
+The chart generator validates that all seven main metrics are present and
+bounded, writes one profile per model/run and one comparison per task, and
+refreshes the report. It performs no inference. `reports/charts/manifest.json`
+records metric choices, exact scores, sample counts, Matplotlib/NumPy versions,
+and source, report, run-completion metadata and figure hashes. Use those package versions to reproduce
+the rendering. The report generator embeds charts only when their report
+hashes and run order match the current results; regenerate charts after adding
+or changing runs or their completion metadata. To refresh only tables and the field guide, run
+`python -m benchmarks.src.generate_report`.
+
+### Model profile charts
+
+The [radar charts](README.md#model-profiles) show one profile per model/run.
+Each axis uses the task's main metric from the report's overview table.
+The [Table field guide](README.md#table-field-guide) explains these metrics.
+Axes have identical order and a fixed radial range of 0–100, using recorded
+scores multiplied by 100. There is no normalization to the best observed
+model or to sample count, and failures retain their scoring penalties.
+
+The chart metrics have a natural 0–1 range. Captioning uses bounded ROUGE-L;
+CIDEr, which is not bounded to 0–1, remains in the tables. Each axis summarizes
+a different task: equal radial values do not imply equal difficulty, and
+polygon area is not an overall model score. Charts compare task quality;
+use the tables to assess quality alongside failures and resource usage.
+
+Model columns, profile grids, task bars and detail tables show the newest
+completed runs first. Ordering uses `completed.json`'s recorded `completed_at`,
+falling back to the latest task completion for unfinished or older runs.
+Undated runs appear last; ties use the run ID. File modification times and
+chart regeneration do not change the order. On-demand pair comparisons keep
+the model order supplied in the command.
+
+Colors come from the shared ten-color palette in
+[`src/chart_style.py`](src/chart_style.py). The first eight bytes of a model ID's
+SHA-256 checksum, interpreted as an unsigned big-endian integer modulo the
+palette length, select its slot. Assignments are independent of run date,
+sample count and retry allowance. Changing palette length or order changes
+assignments. Profiles, task bars and pair comparisons use the same base
+colors; if both comparison curves share a color, the second uses the next
+palette entry, wrapping at the end. Manifests record resolved colors and
+source hashes.
+
+### Task comparison charts
+
+The [task comparisons](README.md#task-comparisons) show one horizontal bar
+chart per task variant, using the same main metrics, model order and colors
+as the model profiles. Bars use the same fixed 0–100 range (recorded metric
+multiplied by 100); no scores are normalized against the observed models.
+
+The chart manifest records each task's metric, original scores, displayed
+model labels and filenames. The report pairs charts with full tables and
+links both views through its overview. Shared field definitions live in the
+[Table field guide](README.md#table-field-guide).
+
+### Compare two models locally
+
+Generate a dedicated report for two models by passing the names shown in the
+benchmark charts. Run from the repository root, using the same Matplotlib setup
+as above:
+
+```bash
+.venv/bin/python -m benchmarks.src.generate_comparison "Qwen3-VL-2B" "Qwen3-VL-235B"
+```
+
+The command reads saved results and writes only the selected pair's report to
+`benchmarks/reports/model-comparisons/<run>--vs--<run>/`. Open its `README.md`
+for the introduction and run configurations, followed by the overlaid radar
+chart and task summary table. Expand **Breakdown** for full metrics and usage;
+its fields follow the main report's
+[Table field guide](README.md#table-field-guide). PNG and SVG images and a
+provenance manifest are saved alongside it. These local outputs
+are gitignored; the main benchmark README and charts are unchanged, and no
+model inference is performed.
+
+Use `--output /path/to/comparison` to choose another output directory, or
+`--runs /path/to/runs` to read another set of recorded runs. Repeating a command
+refreshes that pair's report. List the available names and run IDs with:
+
+```bash
+.venv/bin/python -m benchmarks.src.generate_comparison --list-models
+```
+
+Names are case-insensitive. Full model identifiers and individual profile chart
+titles are also accepted. If a model has multiple recorded runs, pass an exact
+run ID from the list to choose one. Unknown, ambiguous and duplicate selections
+are rejected before report generation.
+
+Overlays use the individual profiles' axis order, fixed scale, recorded scores
+and base colors, without normalization between models. When both colors match,
+the second curve uses the next palette entry. Both lines are solid and a
+legend identifies each model. Polygon area is not an overall score. The table
+uses the same formatting and usage accounting as the main report, with links
+back to the selected source results. The manifest records selected runs, original
+scores, rendering versions, source and input hashes, and generated file hashes.
+
+### Regenerate historical reports
+
+Use the generation commands above with the saved `runs/` archives. Report
+generation reads their metrics and run configs, so it preserves scores from
+the original caption instructions without making new model requests.
+
+To recreate an earlier report's layout and rendering, use a separate checkout
+at that Git revision and the package versions recorded in its chart manifest.
+To rerun inference instead, follow [Runs](#runs) with the run's saved
+`setup_snapshots/model.json` (`config.json` in older runs), task selection and
+sample count from its `config.json`, and recorded source version rather than
+current model templates.
 
 ## Artifacts
 
