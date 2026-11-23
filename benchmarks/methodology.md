@@ -194,6 +194,51 @@ samples, recording the changed allowance and any additional usage.
 Correction retries keep the same cap and usually do not resolve cap failures;
 see [Correction retry runs](#correction-retry-runs) for when they are useful.
 
+### Discounted service tiers and background requests
+
+For runs that can tolerate delayed results, consider discounted service tiers
+or background requests. These are candidates for future runs: the current
+benchmark runners execute samples sequentially and do not expose service-tier
+or completion-window configuration. The options below were reviewed on
+2026-11-23; confirm current pricing and support for the exact model, API route
+and region before using them.
+
+| Provider | Possible cost-saving method | Conditions |
+|---|---|---|
+| [OpenAI](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) | Background completion windows: `2h` at 30% below Standard model-token rates, or `8h` at 40% below Standard | Eligible Responses API models; `background=true`, `service_tier="default"`, `background_options.completion_window` set to the selected window, and streaming disabled. Background mode with the default `soonest` window has no discount |
+| [Google deferred tier](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/deferred-tier) | Deferred background turns at 50% below Standard input, output and thinking-token rates | Supported models on the global endpoint through the Interactions API; `service_tier="deferred"`, `background=true` and `store=true`; 24-hour completion target |
+| [Amazon Bedrock](https://aws.amazon.com/bedrock/pricing/) | Flex tiers offer discounts for selected models, including published 50% discounts | Confirm the selected model's tier, region, API support and rate; Flex changes request scheduling and does not itself provide a background job workflow |
+
+Flex tiers adjust request scheduling and may increase latency or throttling.
+Background/deferred execution returns a job identifier for polling or later
+retrieval. These mechanisms have different scheduling, retention and failure
+behavior; a generic `background` flag alone would not guarantee a discount.
+
+PydanticAI already provides a cross-provider `service_tier` model setting with
+`auto`, `default`, `flex` and `priority` values. Prefer that setting where the
+provider supports it, retaining provider-specific fields for completion windows
+and deferred APIs. Unsupported tier choices may be ignored, so verify the
+effective tier rather than assume savings. This setting does not cover every
+provider's deferred API. Output mode remains an independent choice for
+delivering the response schema.
+
+Background request handling needs submission, status polling, result retrieval,
+cancellation and resume. Discounted background requests can support workflows
+with follow-up correction attempts, but the current synchronous task call
+waits for completion. A sequential run could
+therefore wait through a completion window for every sample. Deferred runs
+need suitable submission concurrency, saved job IDs and retrieval after an
+interruption to avoid repeating accepted requests.
+
+Record discounted execution as a separate run with the same frozen samples,
+task instructions, schemas, scoring, token budget and correction allowance.
+Save the requested and effective tier, completion window, job/request IDs,
+submission concurrency and a dated pricing source. Include queue and retrieval
+time in end-to-end latency, and distinguish it from generation time when the
+provider exposes both. Use rates for the effective tier when estimating costs;
+existing estimates may not account for completion-window discounts. Preserve
+usage for all correction attempts and keep estimates separate from invoices.
+
 ### Setup revisions
 
 Model configs and task specs each declare a positive integer `revision`.
