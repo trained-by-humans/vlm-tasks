@@ -7,7 +7,5 @@
   "max_new_tokens": 4096,
   "output_mode": "native",
   "retries": 0,
-  "samples_per_task": 100,
-  "tasks": ["classify", "detect", "ground_box", "ground_point", "attributes", "answer", "describe"],
   "sdk_total_max_attempts": 1
 }

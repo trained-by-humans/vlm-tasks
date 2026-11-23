@@ -16,9 +16,11 @@ def test_run_setup_saves_selected_specs_and_preserves_checkpoint_revision(tmp_pa
     config = {"model": "test", "revision": 3, "checkpoint_revision": "hf-checkpoint",
               "tasks": ["classify", "detect", "describe"]}
     save_run_setup(tmp_path, config)
-    assert not (tmp_path / "config.json").exists()
+    assert json.loads((tmp_path / "config.json").read_text()) == config
     assert not (tmp_path / "task-specs").exists()
-    assert json.loads((tmp_path / "setup_snapshots/model.json").read_text()) == config
+    assert json.loads((tmp_path / "setup_snapshots/model.json").read_text()) == {
+        key: value for key, value in config.items() if key not in ("tasks", "samples_per_task")
+    }
     assert {path.stem for path in (tmp_path / "setup_snapshots").glob("*.json")} == {"model", "classify", "detect", "describe"}
     assert not (tmp_path / "setup_snapshots/task-specs").exists()
     for task in config["tasks"]:
@@ -54,9 +56,10 @@ def test_setup_check_rejects_changed_revisions_or_definitions(tmp_path, monkeypa
     if not layout:
         (tmp_path / "task-specs").mkdir()
         for path in (tmp_path / "setup_snapshots").iterdir():
-            target = (tmp_path / "config.json" if path.name == "model.json"
-                      else tmp_path / "task-specs" / path.name)
-            path.rename(target)
+            if path.name == "model.json":
+                path.unlink()
+            else:
+                path.rename(tmp_path / "task-specs" / path.name)
         (tmp_path / "setup_snapshots").rmdir()
     check_run_setup(tmp_path, config)
     if change == "model_revision":
@@ -74,12 +77,22 @@ def test_setup_check_rejects_changed_revisions_or_definitions(tmp_path, monkeypa
     assert {path: path.read_bytes() for path in before} == before
 
 
-def test_missing_snapshot_config_does_not_fall_back_to_root_config(tmp_path):
+def test_resume_requires_model_snapshot_even_when_run_config_exists(tmp_path):
     config = {"revision": 1, "tasks": ["classify"]}
     save_run_setup(tmp_path, config)
-    (tmp_path / "config.json").write_text(json.dumps(config))
-    run_config_path(tmp_path).unlink()
+    assert run_config_path(tmp_path) == tmp_path / "config.json"
+    (tmp_path / "setup_snapshots/model.json").unlink()
     with pytest.raises(FileNotFoundError):
+        check_run_setup(tmp_path, config)
+
+
+def test_resume_refuses_a_changed_model_snapshot(tmp_path):
+    config = {"revision": 1, "tasks": ["classify"], "samples_per_task": 2, "temperature": 0}
+    save_run_setup(tmp_path, config)
+    path = tmp_path / "setup_snapshots/model.json"
+    snapshot = json.loads(path.read_text())
+    path.write_text(json.dumps({**snapshot, "temperature": 1}))
+    with pytest.raises(ValueError, match="model config differs"):
         check_run_setup(tmp_path, config)
 
 
@@ -89,4 +102,4 @@ def test_setup_files_declare_independent_positive_revisions():
     for path in (root / "benchmarks/setup/model-configs").glob("*.json"):
         config = json.loads(path.read_text())
         assert model_config_revision(config) > 0
-        assert not {"match_iou", "tokenizer_version", "task_context"}.intersection(config)
+        assert not {"match_iou", "tokenizer_version", "task_context", "tasks", "samples_per_task"}.intersection(config)

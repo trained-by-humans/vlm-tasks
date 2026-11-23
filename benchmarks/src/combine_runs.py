@@ -115,7 +115,7 @@ def combine(sources, prepared, output):
     if (run_setup_directory(segments[0]["source"]) / "task-specs").is_dir() or isinstance(config.get("revision"), int):
         save_run_setup(output, config)
     else:
-        write_json(output / "setup_snapshots/model.json", config)
+        write_json(output / "config.json", config)
     write_json(output / "manifest.json", manifest)
     packages = {d.metadata["Name"]: d.version for d in metadata.distributions() if d.metadata["Name"]}
     write_json(output / "environment.json", {

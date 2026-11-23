@@ -6,6 +6,44 @@ import pytest
 from benchmarks.src.task_registry import AXES, TASKS, TASK_SPECS_DIRECTORY, load_task_specs
 
 
+@pytest.mark.parametrize("script", ["prepare_datasets", "run_bedrock", "run_transformers"])
+def test_run_selection_defaults_to_all_tasks_and_100_samples(tmp_path, monkeypatch, script):
+    import argparse
+    from importlib import import_module
+
+    module = import_module(f"benchmarks.src.{script}")
+    parse_args = argparse.ArgumentParser.parse_args
+    parsed = []
+
+    def capture_args(parser, argv):
+        # Stop before dataset preparation or model setup.
+        parsed.append(parse_args(parser, argv))
+        raise SystemExit(0)
+
+    monkeypatch.setattr(argparse.ArgumentParser, "parse_args", capture_args)
+    for flags in ([], ["--tasks", "classify", "describe", "--samples-per-task", "2"]):
+        with pytest.raises(SystemExit) as exc:
+            module.main(["--output", str(tmp_path / "output"), *flags])
+        assert exc.value.code == 0
+    defaults, selected = parsed
+    assert defaults.tasks == list(TASKS)
+    assert defaults.samples_per_task == 100
+    assert selected.tasks == ["classify", "describe"]
+    assert selected.samples_per_task == 2
+
+
+@pytest.mark.parametrize("script", ["prepare_datasets", "run_bedrock", "run_transformers"])
+@pytest.mark.parametrize("count", ["0", "-1", "1.5"])
+def test_scripts_reject_invalid_sample_counts_before_setup(tmp_path, script, count):
+    from importlib import import_module
+
+    module = import_module(f"benchmarks.src.{script}")
+    with pytest.raises(SystemExit) as exc:
+        module.main(["--samples-per-task", count, "--output", str(tmp_path / "output")])
+    assert exc.value.code == 2
+    assert not (tmp_path / "output").exists()
+
+
 def test_task_specs_preserve_the_benchmark_task_and_axis_order():
     expected = ["classify", "detect", "ground_box", "ground_point", "attributes", "answer", "describe"]
     assert list(TASKS) == [task for task, *_ in AXES] == expected
@@ -74,7 +112,6 @@ def test_caption_preparation_reads_tokenizer_from_task_spec(tmp_path, monkeypatc
     from PIL import Image
 
     from benchmarks.src import prepare_datasets
-    from benchmarks.src.artifacts import write_json
 
     dataset = datasets.Dataset.from_dict(
         {"image": [Image.new("RGB", (2, 3), "red")], "captions": [["a red image"]]},
@@ -88,9 +125,7 @@ def test_caption_preparation_reads_tokenizer_from_task_spec(tmp_path, monkeypatc
         prepare=lambda: prepared_versions.append(kwargs["tokenizer_version"]),
     ))
     monkeypatch.setattr(prepare_datasets.validation, "load_coco_captions2017", lambda **kwargs: dataset)
-    config = tmp_path / "model.json"
-    write_json(config, {"tasks": ["describe"], "samples_per_task": 1})
     output = tmp_path / "prepared"
-    assert prepare_datasets.main(["--config", str(config), "--output", str(output)]) == 0
+    assert prepare_datasets.main(["--tasks", "describe", "--samples-per-task", "1", "--output", str(output)]) == 0
     assert prepared_versions == ["custom-version"]
     assert json.loads((output / "manifest.json").read_text())["samples_per_task"] == 1

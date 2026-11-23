@@ -15,17 +15,20 @@ from .task_registry import DATASETS, TASKS
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, default=Path("benchmarks/setup/model-configs/qwen3-vl-2b-transformers.json"))
+    parser.add_argument("--tasks", nargs="+", choices=DATASETS, default=list(DATASETS),
+                        help="Task variants to evaluate (default: all benchmark tasks)")
+    parser.add_argument("--samples-per-task", type=int, default=100,
+                        help="Samples to evaluate per task (default: 100)")
     parser.add_argument("--output", type=Path, default=Path("benchmarks/.cache/prepared-datasets-100"))
     parser.add_argument("--sources", type=Path, help="Optional dataset-name -> local loader kwargs JSON; paths relative to cwd")
     args = parser.parse_args(argv)
-    config = json.loads(args.config.read_text())
+    if args.samples_per_task < 1:
+        parser.error("--samples-per-task must be positive")
     sources = json.loads(args.sources.read_text()) if args.sources else {}
     if args.output.exists():
         raise FileExistsError(f"Use a new prepared directory: {args.output}")
-    count = config["samples_per_task"]
-    if type(count) is not int or count < 1:
-        raise ValueError("samples_per_task must be positive")
+    count = args.samples_per_task
+    tasks = list(dict.fromkeys(args.tasks))
     cache = args.output.parent / "downloads"
     loaders = {
         "cifar10": validation.load_cifar10, "coco128": validation.load_coco128,
@@ -33,11 +36,11 @@ def main(argv=None):
         "vqav2": validation.load_vqav2, "coco_captions2017": validation.load_coco_captions2017,
     }
     # Preflight Java and fetch the pinned tokenizer before loading model weights.
-    if "describe" in config["tasks"]:
+    if "describe" in tasks:
         DescribeMetrics(tokenizer_version=TASKS["describe"].tokenizer_version, cache_dir=cache).prepare()
     manifest = {"created_at": utc_now(), "selection": "first eligible rows in loader source order; no shuffle",
-                "samples_per_task": count, "datasets": {}}
-    for name in dict.fromkeys(DATASETS[task] for task in config["tasks"]):
+                "tasks": tasks, "samples_per_task": count, "datasets": {}}
+    for name in dict.fromkeys(DATASETS[task] for task in tasks):
         started = perf_counter()
         print(f"Preparing {name}: {count} samples", flush=True)
         options = dict(sources.get(name, {}))

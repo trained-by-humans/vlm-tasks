@@ -7,8 +7,6 @@
   "temperature": null,
   "temperature_note": "Bedrock Kimi K3.1 rejects temperature; omit the field and use provider-controlled sampling",
   "max_new_tokens": 4096,
-  "samples_per_task": 100,
-  "tasks": ["classify", "detect", "ground_box", "ground_point", "attributes", "answer", "describe"],
   "sdk_total_max_attempts": 1,
   "pricing": {
     "source": "https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-moonshot-ai-kimi-k3-1-highspeed.html",

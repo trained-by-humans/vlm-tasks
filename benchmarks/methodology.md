@@ -141,20 +141,29 @@ are not measured.
 
 ## Run parameters
 
-Each run uses a JSON configuration from [`setup/model-configs/`](setup/model-configs/). The sample
-count, output budget, output mode and retry allowance are configurable; the values below
-describe the published runs rather than requirements of the protocol.
+Each inference run loads model settings from
+[`setup/model-configs/`](setup/model-configs/). Task selection and sample count
+are command-line arguments shared by preparation and both runners; they are
+not stored in model configs. Omitting them selects all benchmark tasks and
+100 samples per task. Dataset preparation needs no model config.
+The values below describe the published runs rather than requirements of the protocol.
 
 | Parameter | Behavior | Published configurations |
 |---|---|---|
 | `model` and backend settings | Select the model and execution environment; record revisions, hardware or provider routing where available | Local Transformers and AWS Bedrock; see each config |
-| `tasks` | Select task variants to evaluate | Seven variants across six vision tasks |
-| `samples_per_task` | Positive sample count, frozen during preparation; the run must match its prepared manifest | 100 per variant |
+| `--tasks TASK ...` | Select task variants; defaults to all benchmark tasks | Seven variants across six vision tasks |
+| `--samples-per-task N` | Positive sample count; defaults to 100 and must match the prepared manifest | 100 per variant |
 | `max_new_tokens` | Maximum generated tokens per request, including each correction attempt | 4,096 |
 | `output_mode` (Bedrock) | `prompted` supplies schema instructions in the prompt; `native` requests provider JSON Schema output. Defaults to `prompted` | Prompted baselines and a separate native Qwen3-VL-235B run |
 | `retries` | Nonnegative maximum correction attempts after the initial request; defaults to `0` when omitted | `0`, plus a separate Qwen3-VL-235B run with `2` |
 | Generation settings | Control decoding where the backend supports it; record differences such as provider-controlled sampling | Local greedy decoding with seed 42; hosted settings vary by model |
 | `thinking` (Bedrock, optional) | Pass PydanticAI's reasoning-effort setting to the provider; reasoning counts toward `max_new_tokens` | Claude Fable 5.2: `high` adaptive effort |
+
+Use the same selection and sample count for preparation and inference; a
+prepared suite can also supply a subset of its tasks. Pass `--output` and
+`--prepared` paths matching the chosen subset. The run's `config.json` saves
+the resolved `tasks` and `samples_per_task`, including defaults, alongside
+the effective model settings. No separate run-config setup file is needed.
 
 The Transformers runner uses prompted JSON output. The Bedrock runner accepts
 prompted or native output; see [Native JSON Schema runs](#native-json-schema-runs).
@@ -201,11 +210,14 @@ runs/<run>/
 ├── setup_snapshots/
 │   ├── model.json
 │   └── <task>.json
+├── config.json
 ├── model.json
 ├── <task>.json
 └── <task>.jsonl
 ```
 
+`setup_snapshots/model.json` preserves only model settings; task selection and
+sample count are run choices recorded in `config.json`.
 Each task report stores the definition revisions as
 `model_config_revision` and `task_spec_revision`. The task report
 `revision` field continues to identify the model checkpoint.
@@ -438,8 +450,9 @@ the original caption instructions without making new model requests.
 To recreate an earlier report's layout and rendering, use a separate checkout
 at that Git revision and the package versions recorded in its chart manifest.
 To rerun inference instead, follow [Runs](#runs) with the run's saved
-`setup_snapshots/model.json` (`config.json` in older runs) and recorded
-source version rather than current model templates.
+`setup_snapshots/model.json` (`config.json` in older runs), task selection and
+sample count from its `config.json`, and recorded source version rather than
+current model templates.
 
 ## Runs
 
@@ -484,7 +497,7 @@ Prepare data independently of inference. This downloads source annotations,
 the selected images, and the caption tokenizer into the benchmark cache:
 
 ```bash
-python -m benchmarks.src.prepare_datasets --config benchmarks/setup/model-configs/qwen3-vl-2b-transformers.json \
+python -m benchmarks.src.prepare_datasets \
   --output benchmarks/.cache/prepared-datasets-100
 python -m benchmarks.src.run_transformers --config benchmarks/setup/model-configs/qwen3-vl-2b-transformers.json \
   --prepared benchmarks/.cache/prepared-datasets-100 \
@@ -543,7 +556,8 @@ the JAR is cached, so `HF_HUB_OFFLINE` and `HF_DATASETS_OFFLINE` must remain
 unset or zero for that step. Local model loading can still use `--offline`.
 
 Both runners support `--resume` at a task boundary: rerun the original
-inference command with the same config, prepared data and output directory,
+inference command with the same model config, task selection, sample count,
+prepared data and output directory,
 adding `--resume`. They verify the saved configuration, dataset manifest,
 completed sample indices and model settings. Complete tasks are retained;
 nonempty journals for unfinished tasks prevent automatic resumption, so a
@@ -552,9 +566,9 @@ partly evaluated task is never silently repeated.
 Original metadata is retained. `continuations/<timestamp>/` records the
 continuation's environment, source hashes, model metadata and selected tasks,
 and new task reports reference that environment. Scorer setup interruptions
-before inference add no model requests or scored failures. The local runner
-also supports `--tasks TASK ...` for a selected-task run in a fresh output
-directory; retain artifacts from both invocations if using this alternative.
+before inference add no model requests or scored failures. Both runners
+support `--tasks TASK ...` for a selected-task run in a fresh output directory;
+retain artifacts from both invocations if using this alternative.
 
 </details>
 
@@ -773,10 +787,11 @@ hardware, tokenization or provider preprocessing identical.
 <summary>View Fable configuration and commands</summary>
 
 [`claude-fable-5.2-bedrock.json`](setup/model-configs/claude-fable-5.2-bedrock.json)
-uses 100 samples per variant, prompted JSON, zero correction retries and the
-same 4,096-token output budget and scoring rules. The initial
-[`pilot config`](setup/model-configs/claude-fable-5.2-bedrock-pilot.json) uses the first
-10 rows per variant; its standalone results remain under `experiments/`.
+uses prompted JSON, zero correction retries and the same 4,096-token output
+budget and scoring rules. The published run evaluates the default 100 samples
+per variant. The initial pilot evaluated the first 10 rows per variant; its
+standalone results remain under `experiments/`. For a new pilot, pass
+`--samples-per-task 10` to preparation and inference with matching prepared data.
 
 Fable is invoked through `global.anthropic.claude-fable-5-2` from Tokyo.
 Temperature is omitted as required by the model. Adaptive thinking is always
@@ -808,8 +823,9 @@ HF_HUB_OFFLINE=0 HF_DATASETS_OFFLINE=0 .venv/bin/python -m benchmarks.src.run_be
 
 The recorded run retains the initial 10 responses per variant and evaluates
 only rows 11–100 in the continuation: 70 existing requests plus 630 new ones.
-Both parts use the normal Bedrock runner, with prepared dataset subsets and
-configs that differ only in sample count. This is separate from `--resume`,
+Both parts use the normal Bedrock runner with prepared dataset subsets and
+different sample counts (10 and 90). New runs select these counts with
+`--samples-per-task`. This is separate from `--resume`,
 which continues between completed tasks and requires the original sample count.
 
 The [combining procedure](#combine-consecutive-runs) recomputes all metrics
@@ -848,7 +864,8 @@ HF_HUB_OFFLINE=0 HF_DATASETS_OFFLINE=0 .venv/bin/python -m benchmarks.src.combin
 | `benchmarks/src/generate_charts.py` | Model radar profiles and task comparison charts from saved reports |
 | `benchmarks/src/chart_style.py` | Shared palette and deterministic model color selection |
 | `benchmarks/src/generate_comparison.py` | On-demand local report for two selected model runs |
-| `runs/<run>/setup_snapshots/model.json` | Model config snapshot, including `revision`, requested tasks, sample count and inference settings |
+| `runs/<run>/config.json` | Resolved run choices: `tasks`, `samples_per_task` and effective model settings, including defaults |
+| `runs/<run>/setup_snapshots/model.json` | Model config snapshot, including `revision` and inference settings; excludes task selection and sample count |
 | `runs/<run>/setup_snapshots/<task>.json` | Selected task definition snapshot, including `revision` |
 | `runs/<run>/manifest.json` | Dataset identities, targets and image hashes |
 | `runs/<run>/environment.json`, `requirements.txt` | Python/platform/package versions, git revision and source hashes |

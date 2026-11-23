@@ -57,6 +57,9 @@ def run_setup_directory(run):
 
 
 def run_config_path(run):
+    config = Path(run) / "config.json"
+    if config.exists():
+        return config
     setup = run_setup_directory(run)
     filename = "config.json" if setup == Path(run) else "model.json"
     return setup / filename
@@ -79,7 +82,10 @@ def save_run_setup(output, config):
     snapshots = output / "setup_snapshots"
     if snapshots.exists() or (output / "config.json").exists() or (output / "task-specs").exists():
         raise FileExistsError(f"Run setup already exists: {output}")
-    write_json(snapshots / "model.json", config)
+    write_json(output / "config.json", config)
+    model_config = {key: value for key, value in config.items()
+                    if key not in ("tasks", "samples_per_task")}
+    write_json(snapshots / "model.json", model_config)
     for task, spec in specs.items():
         write_json(snapshots / f"{task}.json", spec)
 
@@ -91,6 +97,12 @@ def check_run_setup(output, config):
     model_config_revision(config)
     if json.loads(run_config_path(output).read_text()) != config:
         raise ValueError("Run configuration differs from the saved run")
+    output = Path(output)
+    if (output / "config.json").exists() and (output / "setup_snapshots").exists():
+        model_config = {key: value for key, value in config.items()
+                        if key not in ("tasks", "samples_per_task")}
+        if json.loads((output / "setup_snapshots/model.json").read_text()) != model_config:
+            raise ValueError("Run model config differs from the saved snapshot")
     for task in config["tasks"]:
         path = run_task_spec_path(output, task)
         if not path.is_file():

@@ -6,7 +6,5 @@
   "region_note": "Tokyo's first request exceeded the 600-second timeout; benchmark uses US East (N. Virginia)",
   "temperature": 0.0,
   "max_new_tokens": 4096,
-  "samples_per_task": 100,
-  "tasks": ["classify", "detect", "ground_box", "ground_point", "attributes", "answer", "describe"],
   "sdk_total_max_attempts": 1
 }

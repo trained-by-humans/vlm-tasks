@@ -13,7 +13,10 @@ from ml_pipes import vlm
 from .artifacts import (
     model_config_revision, provenance, revision_fields, save_run_setup, utc_now, write_json,
 )
-from .evaluation import RecordingBackend, RecordingModel, evaluate, load_prepared, max_retries, remaining_tasks, task_settings, usage_summary
+from .evaluation import (
+    RecordingBackend, RecordingModel, evaluate, load_prepared, max_retries,
+    remaining_tasks, task_settings, usage_summary,
+)
 from .task_registry import DATASETS
 
 
@@ -22,14 +25,20 @@ def main(argv=None):
     parser.add_argument("--config", type=Path, default=Path("benchmarks/setup/model-configs/qwen3-vl-2b-transformers.json"))
     parser.add_argument("--prepared", type=Path, default=Path("benchmarks/.cache/prepared-datasets-100"))
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--tasks", nargs="+", choices=DATASETS, help="Run selected tasks in a fresh output directory")
+    parser.add_argument("--tasks", nargs="+", choices=DATASETS, default=list(DATASETS),
+                        help="Task variants to evaluate (default: all benchmark tasks)")
+    parser.add_argument("--samples-per-task", type=int, default=100,
+                        help="Samples to evaluate per task (default: 100)")
     parser.add_argument("--offline", action="store_true", help="Require already cached model files")
     parser.add_argument("--resume", action="store_true", help="Continue untouched tasks after a task-boundary interruption")
     args = parser.parse_args(argv)
+    if args.samples_per_task < 1:
+        parser.error("--samples-per-task must be positive")
     config = json.loads(args.config.read_text())
+    config["tasks"] = list(dict.fromkeys(args.tasks))
+    config["samples_per_task"] = args.samples_per_task
     model_config_revision(config)
     retries = max_retries(config)
-    config["tasks"] = args.tasks or config["tasks"]
     if args.output.exists() and not args.resume:
         raise FileExistsError(f"Use a new run directory: {args.output}")
     import torch

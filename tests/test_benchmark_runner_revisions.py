@@ -29,8 +29,8 @@ def test_runners_save_config_and_task_revisions_before_inference(tmp_path, monke
             **identity, "fingerprint_sha256": digest(encoded(identity).encode()),
         }},
     })
-    config = {"model": "test-model", "revision": 4, "tasks": ["classify"],
-              "samples_per_task": 2, "max_new_tokens": 4096, "temperature": 0,
+    config = {"model": "test-model", "revision": 4,
+              "max_new_tokens": 4096, "temperature": 0,
               "profile": "test", "region": "us-east-1", "sdk_total_max_attempts": 1,
               "seed": 42, "device": "cpu", "dtype": "float32", "checkpoint_revision": "hf-checkpoint"}
     config_path = tmp_path / "model-config.json"
@@ -93,9 +93,12 @@ def test_runners_save_config_and_task_revisions_before_inference(tmp_path, monke
         ))
         monkeypatch.setattr(runner, "RecordingModel", lambda *args, **kwargs: model)
 
-    assert runner.main(["--config", str(config_path), "--prepared", str(prepared), "--output", str(output)]) == 0
+    assert runner.main(["--config", str(config_path), "--prepared", str(prepared),
+                        "--output", str(output), "--tasks", "classify", "--samples-per-task", "2"]) == 0
     assert json.loads((output / "setup_snapshots/model.json").read_text()) == config
-    assert not (output / "config.json").exists()
+    assert json.loads((output / "config.json").read_text()) == {
+        **config, "tasks": ["classify"], "samples_per_task": 2,
+    }
     assert not (output / "task-specs").exists()
     assert not (output / "setup_snapshots/task-specs").exists()
     task_spec = json.loads((output / "setup_snapshots/classify.json").read_text())

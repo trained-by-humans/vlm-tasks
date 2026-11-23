@@ -98,16 +98,17 @@ def test_combination_rescores_failures_without_requests_and_preserves_original_u
     if legacy_layout:
         (sources[0] / "task-specs").mkdir()
         for path in (sources[0] / "setup_snapshots").iterdir():
-            target = (sources[0] / "config.json" if path.name == "model.json"
-                      else sources[0] / "task-specs" / path.name)
-            path.rename(target)
+            if path.name == "model.json":
+                path.unlink()
+            else:
+                path.rename(sources[0] / "task-specs" / path.name)
         (sources[0] / "setup_snapshots").rmdir()
     output = combine(sources, prepared, tmp_path / "combined")
     report = json.loads((output / "classify.json").read_text())
     assert report["metrics"]["samples"] == 3
     assert report["task_spec_revision"] == report["model_config_revision"] == 1
     assert (output / "setup_snapshots/classify.json").read_bytes() == run_task_spec_path(sources[0], "classify").read_bytes()
-    assert not (output / "config.json").exists()
+    assert json.loads((output / "config.json").read_text())["samples_per_task"] == 3
     assert report["metrics"]["accuracy_top1"] == pytest.approx(1 / 3)
     assert report["metrics"]["failures"] == 1
     assert report["speed_ms_per_sample"]["inference"] == 3000

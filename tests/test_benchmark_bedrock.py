@@ -240,9 +240,10 @@ def test_resume_skips_completed_tasks_and_refuses_to_repeat_interrupted_requests
     if not layout:
         (tmp_path / "task-specs").mkdir()
         for path in (tmp_path / "setup_snapshots").iterdir():
-            target = (tmp_path / "config.json" if path.name == "model.json"
-                      else tmp_path / "task-specs" / path.name)
-            path.rename(target)
+            if path.name == "model.json":
+                path.unlink()
+            else:
+                path.rename(tmp_path / "task-specs" / path.name)
         (tmp_path / "setup_snapshots").rmdir()
     manifest = {"datasets": {"cifar10": {"fingerprint_sha256": "frozen"}}}
     for name, value in (("manifest", manifest), ("classify", {

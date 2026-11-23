@@ -5,7 +5,5 @@
   "device": "mps",
   "dtype": "float16",
   "seed": 42,
-  "max_new_tokens": 4096,
-  "samples_per_task": 100,
-  "tasks": ["classify", "detect", "ground_box", "ground_point", "attributes", "answer", "describe"]
+  "max_new_tokens": 4096
 }

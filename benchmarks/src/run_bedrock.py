@@ -158,9 +158,17 @@ def main(argv=None):
     parser.add_argument("--config", type=Path, default=Path("benchmarks/setup/model-configs/qwen3-vl-235b-a22b-bedrock.json"))
     parser.add_argument("--prepared", type=Path, default=Path("benchmarks/.cache/prepared-datasets-100"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--tasks", nargs="+", choices=DATASETS, default=list(DATASETS),
+                        help="Task variants to evaluate (default: all benchmark tasks)")
+    parser.add_argument("--samples-per-task", type=int, default=100,
+                        help="Samples to evaluate per task (default: 100)")
     parser.add_argument("--resume", action="store_true", help="Continue untouched tasks after a task-boundary interruption")
     args = parser.parse_args(argv)
+    if args.samples_per_task < 1:
+        parser.error("--samples-per-task must be positive")
     config = json.loads(args.config.read_text())
+    config["tasks"] = list(dict.fromkeys(args.tasks))
+    config["samples_per_task"] = args.samples_per_task
     model_config_revision(config)
     retries = max_retries(config)
     mode = output_mode(config)
