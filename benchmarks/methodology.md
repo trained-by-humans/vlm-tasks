@@ -19,6 +19,7 @@ scoring. Run the module commands below from the repository root.
 - [Reporting](#reporting)
 - [Artifacts](#artifacts)
 - [Interpretation limits](#interpretation-limits)
+- [Future improvements](#future-improvements)
 
 ## Layout and naming
 
@@ -193,51 +194,6 @@ answers. Evaluate larger output budgets as separate experiments on the same
 samples, recording the changed allowance and any additional usage.
 Correction retries keep the same cap and usually do not resolve cap failures;
 see [Correction retry runs](#correction-retry-runs) for when they are useful.
-
-### Discounted service tiers and background requests
-
-For runs that can tolerate delayed results, consider discounted service tiers
-or background requests. These are candidates for future runs: the current
-benchmark runners execute samples sequentially and do not expose service-tier
-or completion-window configuration. The options below were reviewed on
-2026-11-23; confirm current pricing and support for the exact model, API route
-and region before using them.
-
-| Provider | Possible cost-saving method | Conditions |
-|---|---|---|
-| [OpenAI](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) | Background completion windows: `2h` at 30% below Standard model-token rates, or `8h` at 40% below Standard | Eligible Responses API models; `background=true`, `service_tier="default"`, `background_options.completion_window` set to the selected window, and streaming disabled. Background mode with the default `soonest` window has no discount |
-| [Google deferred tier](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/deferred-tier) | Deferred background turns at 50% below Standard input, output and thinking-token rates | Supported models on the global endpoint through the Interactions API; `service_tier="deferred"`, `background=true` and `store=true`; 24-hour completion target |
-| [Amazon Bedrock](https://aws.amazon.com/bedrock/pricing/) | Flex tiers offer discounts for selected models, including published 50% discounts | Confirm the selected model's tier, region, API support and rate; Flex changes request scheduling and does not itself provide a background job workflow |
-
-Flex tiers adjust request scheduling and may increase latency or throttling.
-Background/deferred execution returns a job identifier for polling or later
-retrieval. These mechanisms have different scheduling, retention and failure
-behavior; a generic `background` flag alone would not guarantee a discount.
-
-PydanticAI already provides a cross-provider `service_tier` model setting with
-`auto`, `default`, `flex` and `priority` values. Prefer that setting where the
-provider supports it, retaining provider-specific fields for completion windows
-and deferred APIs. Unsupported tier choices may be ignored, so verify the
-effective tier rather than assume savings. This setting does not cover every
-provider's deferred API. Output mode remains an independent choice for
-delivering the response schema.
-
-Background request handling needs submission, status polling, result retrieval,
-cancellation and resume. Discounted background requests can support workflows
-with follow-up correction attempts, but the current synchronous task call
-waits for completion. A sequential run could
-therefore wait through a completion window for every sample. Deferred runs
-need suitable submission concurrency, saved job IDs and retrieval after an
-interruption to avoid repeating accepted requests.
-
-Record discounted execution as a separate run with the same frozen samples,
-task instructions, schemas, scoring, token budget and correction allowance.
-Save the requested and effective tier, completion window, job/request IDs,
-submission concurrency and a dated pricing source. Include queue and retrieval
-time in end-to-end latency, and distinguish it from generation time when the
-provider exposes both. Use rates for the effective tier when estimating costs;
-existing estimates may not account for completion-window discounts. Preserve
-usage for all correction attempts and keep estimates separate from invoices.
 
 ### Setup revisions
 
@@ -951,3 +907,117 @@ hardware, dtype, kernels or dependency changes.
 - **Captioning:** scores depend on tokenization and selected-reference IDF scope.
 - **Comparisons:** compare models within the same task and dataset fingerprint,
   and retain failure counts and measured-usage coverage alongside quality scores.
+
+## Future improvements
+
+The current benchmark runners execute samples sequentially and do not expose
+service-tier, completion-window or batch-job configuration. The proposals below
+would add deferred execution while reusing task instructions, response schemas,
+validation and scoring. Provider pricing and limits were reviewed on
+2026-11-23; confirm current eligibility and rates before a new run.
+
+Background and batch APIs can share submission, status, cancellation, result
+retrieval and resume infrastructure, with provider adapters handling request
+formats and storage. Keep their execution modes and configuration distinct:
+submitting a batch job selects batch pricing, while background requests use
+provider-specific completion windows or deferred tiers. Output mode remains
+independent of the execution mode.
+
+### Discounted service tiers and background requests
+
+For runs that can tolerate delayed results, consider discounted service tiers
+or background requests. Confirm support for the exact model, API route and
+region before using them.
+
+| Provider | Possible cost-saving method | Conditions |
+|---|---|---|
+| [OpenAI](https://developers.openai.com/api/docs/guides/background#use-discounted-completion-windows) | Background completion windows: `2h` at 30% below Standard model-token rates, or `8h` at 40% below Standard | Eligible Responses API models; `background=true`, `service_tier="default"`, `background_options.completion_window` set to the selected window, and streaming disabled. Background mode with the default `soonest` window has no discount |
+| [Google deferred tier](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/deferred-tier) | Deferred background turns at 50% below Standard input, output and thinking-token rates | Supported models on the global endpoint through the Interactions API; `service_tier="deferred"`, `background=true` and `store=true`; 24-hour completion target |
+| [Amazon Bedrock](https://aws.amazon.com/bedrock/pricing/) | Flex tiers offer discounts for selected models, including published 50% discounts | Confirm the selected model's tier, region, API support and rate; Flex changes request scheduling and does not itself provide a background job workflow |
+
+Flex tiers adjust request scheduling and may increase latency or throttling.
+Background/deferred execution returns a job identifier for polling or later
+retrieval. These mechanisms have different scheduling, retention and failure
+behavior; a generic `background` flag alone would not guarantee a discount.
+
+PydanticAI already provides a cross-provider `service_tier` model setting with
+`auto`, `default`, `flex` and `priority` values. Prefer that setting where the
+provider supports it, retaining provider-specific fields for completion windows
+and deferred APIs. Unsupported tier choices may be ignored, so verify the
+effective tier rather than assume savings. This setting does not cover every
+provider's deferred API. Output mode remains an independent choice for
+delivering the response schema.
+
+Background request handling needs submission, status polling, result retrieval,
+cancellation and resume. Discounted background requests can support workflows
+with follow-up correction attempts, but the current synchronous task call
+waits for completion. A sequential run could therefore wait through a
+completion window for every sample. Deferred runs need suitable submission
+concurrency, saved job IDs and retrieval after an
+interruption to avoid repeating accepted requests.
+
+Record discounted execution as a separate run with the same frozen samples,
+task instructions, schemas, scoring, token budget and correction allowance.
+Save the requested and effective tier, completion window, job/request IDs,
+submission concurrency and a dated pricing source. Include queue and retrieval
+time in end-to-end latency, and distinguish it from generation time when the
+provider exposes both. Use rates for the effective tier when estimating costs;
+existing estimates may not account for completion-window discounts. Preserve
+usage for all correction attempts and keep estimates separate from invoices.
+
+### Batch APIs
+
+Batch APIs group independent requests into a provider-managed asynchronous job.
+Each request keeps its own task instructions, image and response schema; the
+requests need not be identical. The provider schedules the work and exposes
+results for later collection. Concurrent ordinary task calls do not select
+batch pricing or use batch quota.
+
+| Provider | Batch workflow | Pricing and completion conditions |
+|---|---|---|
+| [OpenAI Batch API](https://developers.openai.com/api/docs/guides/batch) | Upload JSONL requests for one model, submit a batch targeting `/v1/responses` or another supported endpoint, and retrieve output and error files | 50% below standard synchronous model-token pricing; `completion_window="24h"`; unfinished requests can expire |
+| [Anthropic Message Batches](https://platform.claude.com/docs/en/build-with-claude/batch-processing) | Submit independent Messages requests and collect results by request ID | 50% below standard pricing; unfinished requests expire after 24 hours |
+| [Google Gemini Batch API](https://ai.google.dev/gemini-api/docs/batch-api) | Submit inline requests or an input file, then retrieve job results | 50% of standard interactive pricing; 24-hour target turnaround |
+| [Amazon Bedrock batch inference](https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html) | Submit an inference job using S3 input and output locations | Selected models offer discounted [batch pricing](https://aws.amazon.com/bedrock/pricing/), including 50% discounts; verify model, region and job requirements |
+
+Provider APIs differ in supported models, image inputs, request formats, limits
+and result storage. Accessing Claude through Bedrock uses Bedrock's batch
+workflow and pricing. Batch submission is a separate API workflow rather than
+a `service_tier` value; its discount does not stack with a background-window
+discount on the same request.
+
+For OpenAI, each input file can contain up to 50,000 requests and be up to
+200 MB. Queued input tokens per model are limited separately from ordinary
+per-minute request and token limits; this is capacity, not free token credit.
+The queued-token allowance is shared with discounted background requests.
+Check the account's Limits settings and split submissions by file size and
+available capacity. Embedded images may require smaller files even for the
+700-sample suite.
+
+A dedicated benchmark runner would separate preparation/submission from
+collection/scoring:
+
+1. Generate requests from the existing task definitions and frozen samples.
+   Preserve configured schema delivery and model settings, and assign stable
+   IDs containing the task, sample and attempt. Save request files, manifest
+   mappings and the returned batch IDs before waiting for results.
+2. Collect raw responses and errors, matching results by request ID rather
+   than output order. Preserve completed requests when a job expires or fails;
+   resume or resubmit only unfinished work after inspecting the saved state.
+3. Apply the original response validators and replay predictions through the
+   existing task evaluators. Keep response-validation failures in the usual
+   scoring denominators, and handle infrastructure failures separately.
+
+Start with zero correction retries. Later support can submit another batch
+containing only invalid predictions, preserving each sample's image, original
+instructions, response schema, prior responses and validation feedback. Each
+correction round adds turnaround time and usage. The current synchronous
+PydanticAI backend does not perform batch submission or collection automatically.
+
+Record batch execution as a separate run with the same frozen samples, prompts,
+schemas, scoring, token budget and correction allowance. Retain batch and
+request IDs, submission and completion times, errors, raw outputs, token usage
+and a dated batch-pricing source. Include usage from all correction attempts
+and retain incomplete cost coverage when usage is unavailable. Report batch
+turnaround separately from generation time and interactive request latency;
+use batch-specific rates for cost estimates and keep them separate from invoices.
