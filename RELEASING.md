@@ -11,13 +11,14 @@ instructions and affected tests together in a release preparation PR.
 
 CI tests Python 3.11 through 3.13, including the local Transformers adapter
 with fake weights. It runs the synthetic pipelines, builds wheel and source
-artifacts, checks their metadata and installs the wheel in a clean environment.
+artifacts, checks their contents and metadata, and installs the wheel in a clean
+environment.
 Require `Compat: Gate` and `Build and validate distribution` in branch rules.
 
 ## Stage on TestPyPI
 
 After merging, create and push an annotated `v<project.version>` tag, such as
-`v0.1.2rc1`. The `Stage` workflow:
+`v0.1.0`. The `Stage` workflow:
 
 1. Checks that the tag matches the package version and runs CI.
 2. Builds and validates the distributions and records SHA-256 checksums.
@@ -60,7 +61,14 @@ before publishing.
 
 ## Distribution contents
 
-Wheels contain the `ml_pipes.vlm` package. Source distributions also include
-tests, examples and documentation. Experiment archives and research reports
-are available in the repository and excluded from distribution artifacts.
-CI discovers tests under `tests/`.
+Wheels contain only the `ml_pipes.vlm` package and distribution metadata.
+Source distributions contain the same library source, `pyproject.toml`,
+`README.md`, `LICENSE`, VCS ignore rules and generated package metadata. Both
+retain the public `ml_pipes.vlm.validation` API and its caption-scoring license
+notice.
+
+Benchmarks are applications built on the task APIs and remain in the
+repository, along with tests, examples, documentation and release tooling.
+They are excluded from both PyPI artifacts. CI still runs the full repository
+test suite, including benchmark tests. CI and staging check the actual archive
+contents with `python tests/check_distribution.py dist` before publication.

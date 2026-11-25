@@ -39,6 +39,7 @@ links and documentation assets when moving files.
 ```bash
 python -m pip install build twine
 python -m build
+python tests/check_distribution.py dist
 python -m twine check dist/*
 ```
 

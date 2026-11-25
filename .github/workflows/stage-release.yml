@@ -50,6 +50,7 @@ jobs:
       - name: Build and validate artifacts
         run: |
           python -m build
+          python tests/check_distribution.py dist
           python -m twine check dist/*
           cd dist
           sha256sum *.tar.gz *.whl > SHA256SUMS
