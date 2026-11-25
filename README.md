@@ -15,6 +15,10 @@ detection, grounding and attribute prediction.
 **VLM tasks focuses on vision tasks.** For general LLM tasks such as chat,
 text generation and agent workflows, see other popular projects.
 
+> [!IMPORTANT]
+> VLM tasks is distributed as `ml-pipes-vlm` and imported as `ml_pipes.vlm`.
+> Tasks work as direct Python callables and as `ml-pipes` pipeline operators.
+
 ## What's new
 
 <table>
@@ -66,7 +70,7 @@ For the broader roadmap, see the [task catalog](docs/design.md#task-catalog).
 Requires Python 3.11+. Install from a local checkout:
 
 ```bash
-python -m pip install -e .
+python -m pip install ml-pipes-vlm
 ```
 
 ### Connect your model

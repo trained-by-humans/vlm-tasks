@@ -1,8 +1,16 @@
 # Releasing ml-pipes-vlm
 
-The `ml-pipes-vlm` distribution uses the `ml_pipes.vlm` namespace and is
-versioned independently. Framework dependencies use `>=0.1.3,<0.2.0`;
-PydanticAI is pinned to the tested API version, `2.61.0`.
+`ml-pipes-vlm` is an independently versioned, opt-in community distribution
+maintained in the [`vlm-tasks`](https://github.com/trained-by-humans/vlm-tasks)
+repository. It uses the `ml_pipes.vlm` namespace and follows the
+[verified community package policy](https://github.com/trained-by-humans/ml-pipes/blob/main/docs/verified_community_packages.md).
+Framework dependencies use `>=0.1.3,<0.2.0`; PydanticAI is pinned to the tested
+API version, `2.61.0`.
+
+The staging and promotion contract is shared with
+[`ml-pipes-supervision`](https://github.com/trained-by-humans/ml-pipes-supervision/blob/main/RELEASING.md)
+and
+[`ml-pipes-ultralytics`](https://github.com/trained-by-humans/ml-pipes-ultralytics/blob/main/RELEASING.md).
 
 ## Prepare
 
