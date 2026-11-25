@@ -1,0 +1,463 @@
+{
+  "task": "ground_point",
+  "dataset": "refcocog",
+  "model": "google/gemma-3-4b-it",
+  "task_spec_revision": 1,
+  "model_config_revision": 1,
+  "revision": "093f9f388b31de276ce2de164bdc2081324b9767",
+  "device": "mps",
+  "dtype": "bfloat16",
+  "retries": 0,
+  "execution_environment": "environment.json",
+  "completed_at": "2026-11-25T03:41:20.579426+00:00",
+  "metrics": {
+    "samples": 100,
+    "failures": 0,
+    "failure_rate": 0.0,
+    "unique_images": 52,
+    "point_in_box_accuracy": 0.3
+  },
+  "summary": [
+    {
+      "class": "person",
+      "support": 34,
+      "point_in_box_accuracy": 0.29411764705882354
+    },
+    {
+      "class": "bicycle",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "car",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "motorcycle",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "airplane",
+      "support": 2,
+      "point_in_box_accuracy": 1.0
+    },
+    {
+      "class": "bus",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "train",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "truck",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "boat",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "traffic light",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "fire hydrant",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "stop sign",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "parking meter",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "bench",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "bird",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "cat",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "dog",
+      "support": 6,
+      "point_in_box_accuracy": 0.3333333333333333
+    },
+    {
+      "class": "horse",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "sheep",
+      "support": 5,
+      "point_in_box_accuracy": 0.2
+    },
+    {
+      "class": "cow",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "elephant",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "bear",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "zebra",
+      "support": 1,
+      "point_in_box_accuracy": 1.0
+    },
+    {
+      "class": "giraffe",
+      "support": 4,
+      "point_in_box_accuracy": 1.0
+    },
+    {
+      "class": "backpack",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "umbrella",
+      "support": 1,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "handbag",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "tie",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "suitcase",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "frisbee",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "skis",
+      "support": 2,
+      "point_in_box_accuracy": 0.5
+    },
+    {
+      "class": "snowboard",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "sports ball",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "kite",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "baseball bat",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "baseball glove",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "skateboard",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "surfboard",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "tennis racket",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "bottle",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "wine glass",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "cup",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "fork",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "knife",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "spoon",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "bowl",
+      "support": 8,
+      "point_in_box_accuracy": 0.25
+    },
+    {
+      "class": "banana",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "apple",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "sandwich",
+      "support": 3,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "orange",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "broccoli",
+      "support": 2,
+      "point_in_box_accuracy": 0.5
+    },
+    {
+      "class": "carrot",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "hot dog",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "pizza",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "donut",
+      "support": 2,
+      "point_in_box_accuracy": 1.0
+    },
+    {
+      "class": "cake",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "chair",
+      "support": 5,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "couch",
+      "support": 2,
+      "point_in_box_accuracy": 1.0
+    },
+    {
+      "class": "potted plant",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "bed",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "dining table",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "toilet",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "tv",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "laptop",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "mouse",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "remote",
+      "support": 1,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "keyboard",
+      "support": 2,
+      "point_in_box_accuracy": 1.0
+    },
+    {
+      "class": "cell phone",
+      "support": 2,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "microwave",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "oven",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "toaster",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "sink",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "refrigerator",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "book",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "clock",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "vase",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "scissors",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "teddy bear",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "hair drier",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    },
+    {
+      "class": "toothbrush",
+      "support": 0,
+      "point_in_box_accuracy": 0.0
+    }
+  ],
+  "failures": [],
+  "dataset_counts": {
+    "evaluated_expressions": 100,
+    "evaluated_images": 52,
+    "evaluated_samples": 100
+  },
+  "dataset_metadata": {
+    "dataset_name": "refcocog",
+    "config_name": "refcocog",
+    "version": "1.0.0",
+    "description": "MDETR RefCOCO annotations; RefCOCOg uses UMD splits, RefCOCO/+ use UNC.",
+    "split": "val"
+  },
+  "status_counts": {
+    "found": 79,
+    "not_found": 16,
+    "ambiguous": 5
+  },
+  "task_settings": {
+    "geometry": "point"
+  },
+  "dataset_fingerprint_sha256": "ccde8d120ffa9a516aaa27b66ced9bcc5a6e0555202ece37b06fe21166b3373d",
+  "speed_ms_per_sample": {
+    "load": 1.9878229403548175,
+    "inference": 8069.814279109777,
+    "metrics": 0.18845877013518475
+  },
+  "elapsed_seconds": 807.2015204999989,
+  "wall_seconds": 807.2020208329996,
+  "shared_model_load_seconds": 540.2366170840032,
+  "usage": {
+    "attempted_requests": 100,
+    "measured_requests": 100,
+    "unmeasured_requests": 0,
+    "input_tokens": 66036,
+    "output_tokens": 4143,
+    "total_tokens": 70179,
+    "estimated_cost_usd": null,
+    "reported_cost_usd": null,
+    "cost_note": "Local inference; electricity/hardware costs not measured"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "revision": 1,
+  "model": "google/gemma-3-4b-it",
+  "checkpoint_revision": "093f9f388b31de276ce2de164bdc2081324b9767",
+  "device": "mps",
+  "dtype": "bfloat16",
+  "seed": 42,
+  "max_new_tokens": 4096,
+  "retries": 0
+}

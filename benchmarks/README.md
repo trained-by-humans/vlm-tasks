@@ -8,15 +8,15 @@
 
 Main validation metric per task; **best observed values** are bold. Model runs are ordered newest first by recorded completion time. Failures are included. Caption ROUGE-L uses its native scale; other values are percentages. Select a model or task name for detailed metrics and usage.
 
-| Task | Main metric | [Claude Fable 5.2](#claude-fable-52) | [Qwen3-VL-235B (JSON Schema)](#qwen3-vl-235b-json-schema) | [Qwen3-VL-235B (2 retries)](#qwen3-vl-235b-2-retries) | [Kimi K3.1](#kimi-k31) | [Gemma 3 27B](#gemma-3-27b) | [Qwen3-VL-235B](#qwen3-vl-235b) | [Qwen3-VL-2B](#qwen3-vl-2b) |
-|---|---|---:|---:|---:|---:|---:|---:|---:|
-| [Classification](#classification) | Top-1 Acc | 91% | **97%** | 96% | 67% | 82% | 96% | 93% |
-| [Detection](#detection) | F1@0.5 | **71.23%** | 29.71% | 28.45% | 63.75% | 8.27% | 16.67% | 11.24% |
-| [Grounding (Box)](#box) | Acc@0.5 | 80% | 58% | 81% | **92%** | 16% | 31% | 22% |
-| [Grounding (Point)](#point) | Point-in-box Acc | 68% | 88% | 85% | **98%** | 53% | 41% | 35% |
-| [Attributes](#attributes) | Acc | **81.92%** | 74.12% | 78.02% | 75.68% | 70.22% | 73.86% | 55.27% |
-| [VQA](#vqa) | VQA Acc | **82.1%** | 81.5% | 64.9% | 42.7% | 56% | 68.4% | 65% |
-| [Captioning](#captioning) | ROUGE-L | 0.2462 | 0.3609 | 0.3837 | 0.3301 | **0.4274** | 0.3841 | 0.3017 |
+| Task | Main metric | [Gemma 3 4B](#gemma-3-4b) | [Claude Fable 5.2](#claude-fable-52) | [Qwen3-VL-235B (JSON Schema)](#qwen3-vl-235b-json-schema) | [Qwen3-VL-235B (2 retries)](#qwen3-vl-235b-2-retries) | [Kimi K3.1](#kimi-k31) | [Gemma 3 27B](#gemma-3-27b) | [Qwen3-VL-235B](#qwen3-vl-235b) | [Qwen3-VL-2B](#qwen3-vl-2b) |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| [Classification](#classification) | Top-1 Acc | 84% | 91% | **97%** | 96% | 67% | 82% | 96% | 93% |
+| [Detection](#detection) | F1@0.5 | 2.09% | **71.23%** | 29.71% | 28.45% | 63.75% | 8.27% | 16.67% | 11.24% |
+| [Grounding (Box)](#box) | Acc@0.5 | 3% | 80% | 58% | 81% | **92%** | 16% | 31% | 22% |
+| [Grounding (Point)](#point) | Point-in-box Acc | 30% | 68% | 88% | 85% | **98%** | 53% | 41% | 35% |
+| [Attributes](#attributes) | Acc | 59.82% | **81.92%** | 74.12% | 78.02% | 75.68% | 70.22% | 73.86% | 55.27% |
+| [VQA](#vqa) | VQA Acc | 39% | **82.1%** | 81.5% | 64.9% | 42.7% | 56% | 68.4% | 65% |
+| [Captioning](#captioning) | ROUGE-L | **0.4729** | 0.2462 | 0.3609 | 0.3837 | 0.3301 | 0.4274 | 0.3841 | 0.3017 |
 
 ## Model profiles
 
@@ -24,6 +24,11 @@ Main validation metric per task; **best observed values** are bold. Model runs a
 
 <table>
   <tr>
+    <td width="25%" align="center">
+      <a href="#gemma-3-4b"><strong>Gemma 3 4B</strong></a><br>
+      <a href="#gemma-3-4b"><img src="reports/charts/model-profiles/gemma3-4b-20261125.png" alt="Model profile for google/gemma-3-4b-it" width="220"></a><br>
+      <a href="reports/charts/model-profiles/gemma3-4b-20261125.png">PNG</a> · <a href="reports/charts/model-profiles/gemma3-4b-20261125.svg">SVG</a>
+    </td>
     <td width="25%" align="center">
       <a href="#claude-fable-52"><strong>Claude Fable 5.2</strong></a><br>
       <a href="#claude-fable-52"><img src="reports/charts/model-profiles/claude-fable-5.2-bedrock-20261119.png" alt="Model profile for anthropic.claude-fable-5-2" width="220"></a><br>
@@ -39,13 +44,13 @@ Main validation metric per task; **best observed values** are bold. Model runs a
       <a href="#qwen3-vl-235b-2-retries"><img src="reports/charts/model-profiles/qwen3-vl-235b-bedrock-retries-2-20261117.png" alt="Model profile for qwen.qwen3-vl-235b-a22b" width="220"></a><br>
       <a href="reports/charts/model-profiles/qwen3-vl-235b-bedrock-retries-2-20261117.png">PNG</a> · <a href="reports/charts/model-profiles/qwen3-vl-235b-bedrock-retries-2-20261117.svg">SVG</a>
     </td>
+  </tr>
+  <tr>
     <td width="25%" align="center">
       <a href="#kimi-k31"><strong>Kimi K3.1</strong></a><br>
       <a href="#kimi-k31"><img src="reports/charts/model-profiles/kimi-k3.1-bedrock-20261112.png" alt="Model profile for moonshotai.kimi-k3.1" width="220"></a><br>
       <a href="reports/charts/model-profiles/kimi-k3.1-bedrock-20261112.png">PNG</a> · <a href="reports/charts/model-profiles/kimi-k3.1-bedrock-20261112.svg">SVG</a>
     </td>
-  </tr>
-  <tr>
     <td width="25%" align="center">
       <a href="#gemma-3-27b"><strong>Gemma 3 27B</strong></a><br>
       <a href="#gemma-3-27b"><img src="reports/charts/model-profiles/gemma3-27b-bedrock-20261112.png" alt="Model profile for google.gemma-3-27b-it" width="220"></a><br>
@@ -61,11 +66,31 @@ Main validation metric per task; **best observed values** are bold. Model runs a
       <a href="#qwen3-vl-2b"><img src="reports/charts/model-profiles/qwen3-vl-2b-20261112.png" alt="Model profile for Qwen/Qwen3-VL-2B-Instruct" width="220"></a><br>
       <a href="reports/charts/model-profiles/qwen3-vl-2b-20261112.png">PNG</a> · <a href="reports/charts/model-profiles/qwen3-vl-2b-20261112.svg">SVG</a>
     </td>
-    <td width="25%"></td>
   </tr>
 </table>
 
 All profiles use the same axes and scale; higher is better. Failures are included. Polygon area is not an overall score. [Chart method](methodology.md#model-profile-charts)
+
+<a id="model-gemma3-4b-20261125"></a>
+
+### Gemma 3 4B
+
+<details>
+<summary>View chart, metrics and usage</summary>
+
+<a href="reports/charts/model-profiles/gemma3-4b-20261125.png"><img src="reports/charts/model-profiles/gemma3-4b-20261125.png" alt="Model profile for google/gemma-3-4b-it" width="720"></a>
+
+| Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
+|---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [classify / cifar10](runs/gemma3-4b-20261125/classify.json) | 100 | Top-1 Acc 84% | 0% (0%) | 1 | 523 | 20 | — | 6.254 |
+| google/gemma-3-4b-it | [detect / coco128](runs/gemma3-4b-20261125/detect.json) | 100 | P@0.5 4.67%; R@0.5 1.35%; F1@0.5 2.09% | 11% (0%) | 1 | 1,301 | 219 | — | 26.782 |
+| google/gemma-3-4b-it | [ground_box / refcocog](runs/gemma3-4b-20261125/ground_box.json) | 100 | Acc@0.5 3%; Acc@0.75 0%; Acc@0.9 0%; Mean IoU 10.84% | 0% (0%) | 1 | 695 | 59 | — | 9.422 |
+| google/gemma-3-4b-it | [ground_point / refcocog](runs/gemma3-4b-20261125/ground_point.json) | 100 | Point-in-box Acc 30% | 0% (0%) | 1 | 660 | 41 | — | 8.07 |
+| google/gemma-3-4b-it | [attributes / ovad](runs/gemma3-4b-20261125/attributes.json) | 100 | Acc 59.82%; Mean Acc 60.28%; Macro F1 45.37% | 3% (0%) | 1 | 1,726 | 207 | — | 27.548 |
+| google/gemma-3-4b-it | [answer / vqav2](runs/gemma3-4b-20261125/answer.json) | 100 | VQA Acc 39% | 5% (0%) | 1 | 537 | 21 | — | 6.049 |
+| google/gemma-3-4b-it | [describe / coco_captions2017](runs/gemma3-4b-20261125/describe.json) | 100 | CIDEr 0.8466; BLEU-1 0.6613; BLEU-2 0.4432; BLEU-3 0.2908; BLEU-4 0.1819; ROUGE-L 0.4729 | 0% (0%) | 1 | 473 | 27 | — | 6.269 |
+
+</details>
 
 <a id="model-claude-fable-5.2-bedrock-20261119"></a>
 
@@ -270,6 +295,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [classify / cifar10](runs/gemma3-4b-20261125/classify.json) | 100 | Top-1 Acc 84% | 0% (0%) | 1 | 523 | 20 | — | 6.254 |
 | anthropic.claude-fable-5-2 | [classify / cifar10](runs/claude-fable-5.2-bedrock-20261119/classify.json) | 100 | Top-1 Acc 91% | 0% (0%) | 1 | 402 | 53 | 5.323 | 2.993 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [classify / cifar10](runs/qwen3-vl-235b-bedrock-native-20261118/classify.json) | 100 | Top-1 Acc 97% | 0% (0%) | 1 | 156 | 9 | 0.108 | 0.48 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [classify / cifar10](runs/qwen3-vl-235b-bedrock-retries-2-20261117/classify.json) | 100 | Top-1 Acc 96% | 0% (0%) | 1 | 332 | 7 | 0.195 | 0.444 |
@@ -289,6 +315,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [detect / coco128](runs/gemma3-4b-20261125/detect.json) | 100 | P@0.5 4.67%; R@0.5 1.35%; F1@0.5 2.09% | 11% (0%) | 1 | 1,301 | 219 | — | 26.782 |
 | anthropic.claude-fable-5-2 | [detect / coco128](runs/claude-fable-5.2-bedrock-20261119/detect.json) | 100 | P@0.5 71.47%; R@0.5 70.99%; F1@0.5 71.23% | 0% (0%) | 1 | 1,947 | 373 | 30.476 | 5.726 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [detect / coco128](runs/qwen3-vl-235b-bedrock-native-20261118/detect.json) | 100 | P@0.5 83.23%; R@0.5 18.08%; F1@0.5 29.71% | 27% (6%) | 1 | 757 | 499 | 1.728 | 7.554 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [detect / coco128](runs/qwen3-vl-235b-bedrock-retries-2-20261117/detect.json) | 100 | P@0.5 75.14%; R@0.5 17.54%; F1@0.5 28.45% | 0% (0%) | 1.3 | 2,174 | 217 | 1.73 | 4.077 |
@@ -313,6 +340,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [ground_box / refcocog](runs/gemma3-4b-20261125/ground_box.json) | 100 | Acc@0.5 3%; Acc@0.75 0%; Acc@0.9 0%; Mean IoU 10.84% | 0% (0%) | 1 | 695 | 59 | — | 9.422 |
 | anthropic.claude-fable-5-2 | [ground_box / refcocog](runs/claude-fable-5.2-bedrock-20261119/ground_box.json) | 100 | Acc@0.5 80%; Acc@0.75 68%; Acc@0.9 46%; Mean IoU 72.48% | 0% (0%) | 1 | 954 | 135 | 13.016 | 4.429 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [ground_box / refcocog](runs/qwen3-vl-235b-bedrock-native-20261118/ground_box.json) | 100 | Acc@0.5 58%; Acc@0.75 46%; Acc@0.9 29%; Mean IoU 52.22% | 26% (0%) | 1 | 379 | 51 | 0.337 | 1.26 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [ground_box / refcocog](runs/qwen3-vl-235b-bedrock-retries-2-20261117/ground_box.json) | 100 | Acc@0.5 81%; Acc@0.75 68%; Acc@0.9 38%; Mean IoU 71.79% | 0% (0%) | 1.55 | 1,157 | 70 | 0.8 | 1.926 |
@@ -332,6 +360,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [ground_point / refcocog](runs/gemma3-4b-20261125/ground_point.json) | 100 | Point-in-box Acc 30% | 0% (0%) | 1 | 660 | 41 | — | 8.07 |
 | anthropic.claude-fable-5-2 | [ground_point / refcocog](runs/claude-fable-5.2-bedrock-20261119/ground_point.json) | 100 | Point-in-box Acc 68% | 1% (0%) | 1 | 914 | 90 | 10.917 | 4.073 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [ground_point / refcocog](runs/qwen3-vl-235b-bedrock-native-20261118/ground_point.json) | 100 | Point-in-box Acc 88% | 1% (0%) | 1 | 414 | 29 | 0.296 | 0.964 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [ground_point / refcocog](runs/qwen3-vl-235b-bedrock-retries-2-20261117/ground_point.json) | 100 | Point-in-box Acc 85% | 0% (0%) | 1.47 | 1,025 | 39 | 0.646 | 1.38 |
@@ -353,6 +382,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [attributes / ovad](runs/gemma3-4b-20261125/attributes.json) | 100 | Acc 59.82%; Mean Acc 60.28%; Macro F1 45.37% | 3% (0%) | 1 | 1,726 | 207 | — | 27.548 |
 | anthropic.claude-fable-5-2 | [attributes / ovad](runs/claude-fable-5.2-bedrock-20261119/attributes.json) | 100 | Acc 81.92%; Mean Acc 78.58%; Macro F1 58.66% | 0% (0%) | 1 | 2,197 | 271 | 28.398 | 4.806 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [attributes / ovad](runs/qwen3-vl-235b-bedrock-native-20261118/attributes.json) | 100 | Acc 74.12%; Mean Acc 74.59%; Macro F1 58% | 0% (0%) | 1 | 651 | 163 | 0.779 | 2.666 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [attributes / ovad](runs/qwen3-vl-235b-bedrock-retries-2-20261117/attributes.json) | 100 | Acc 78.02%; Mean Acc 76.51%; Macro F1 57.02% | 0% (0%) | 1.05 | 1,696 | 177 | 1.37 | 2.963 |
@@ -372,6 +402,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [answer / vqav2](runs/gemma3-4b-20261125/answer.json) | 100 | VQA Acc 39% | 5% (0%) | 1 | 537 | 21 | — | 6.049 |
 | anthropic.claude-fable-5-2 | [answer / vqav2](runs/claude-fable-5.2-bedrock-20261119/answer.json) | 100 | VQA Acc 82.1% | 0% (0%) | 1 | 831 | 41 | 8.278 | 3.515 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [answer / vqav2](runs/qwen3-vl-235b-bedrock-native-20261118/answer.json) | 100 | VQA Acc 81.5% | 0% (0%) | 1 | 408 | 15 | 0.255 | 0.739 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [answer / vqav2](runs/qwen3-vl-235b-bedrock-retries-2-20261117/answer.json) | 100 | VQA Acc 64.9% | 0% (0%) | 1 | 572 | 14 | 0.34 | 0.76 |
@@ -391,6 +422,7 @@ All profiles use the same axes and scale; higher is better. Failures are include
 
 | Model | Task / dataset | N | Validation metrics | Failure rate (at cap) | Requests / sample | Input tokens / sample | Output tokens / sample | Estimated cost / 1,000 samples | Mean latency (s) |
 |---|---|---:|---|---:|---:|---:|---:|---:|---:|
+| google/gemma-3-4b-it | [describe / coco_captions2017](runs/gemma3-4b-20261125/describe.json) | 100 | CIDEr 0.8466; BLEU-1 0.6613; BLEU-2 0.4432; BLEU-3 0.2908; BLEU-4 0.1819; ROUGE-L 0.4729 | 0% (0%) | 1 | 473 | 27 | — | 6.269 |
 | anthropic.claude-fable-5-2 | [describe / coco_captions2017](runs/claude-fable-5.2-bedrock-20261119/describe.json) | 100 | CIDEr 0.0009; BLEU-1 0.2457; BLEU-2 0.1414; BLEU-3 0.0767; BLEU-4 0.0405; ROUGE-L 0.2462 | 0% (0%) | 1 | 638 | 120 | 9.89 | 4.222 |
 | qwen.qwen3-vl-235b-a22b (JSON Schema) | [describe / coco_captions2017](runs/qwen3-vl-235b-bedrock-native-20261118/describe.json) | 100 | CIDEr 0.0499; BLEU-1 0.3959; BLEU-2 0.2431; BLEU-3 0.1431; BLEU-4 0.0804; ROUGE-L 0.3609 | 0% (0%) | 1 | 328 | 46 | 0.296 | 1.183 |
 | qwen.qwen3-vl-235b-a22b (2 retries) | [describe / coco_captions2017](runs/qwen3-vl-235b-bedrock-retries-2-20261117/describe.json) | 100 | CIDEr 0.1003; BLEU-1 0.4263; BLEU-2 0.2715; BLEU-3 0.1671; BLEU-4 0.0966; ROUGE-L 0.3837 | 0% (0%) | 1 | 452 | 39 | 0.343 | 1.132 |

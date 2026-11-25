@@ -1,0 +1,1000 @@
+{
+  "task": "attributes",
+  "dataset": "ovad",
+  "model": "google/gemma-3-4b-it",
+  "task_spec_revision": 1,
+  "model_config_revision": 1,
+  "revision": "093f9f388b31de276ce2de164bdc2081324b9767",
+  "device": "mps",
+  "dtype": "bfloat16",
+  "retries": 0,
+  "execution_environment": "environment.json",
+  "completed_at": "2026-11-25T04:27:15.682068+00:00",
+  "metrics": {
+    "samples": 100,
+    "failures": 3,
+    "failure_rate": 0.03,
+    "attribute_decisions": 769,
+    "unique_images": 17,
+    "accuracy": 0.5981794538361509,
+    "mean_attribute_accuracy": 0.6027775681079309,
+    "macro_f1": 0.4536547637720378
+  },
+  "summary": [
+    {
+      "attribute": "cleanliness",
+      "support": 32,
+      "accuracy": 0.59375,
+      "macro_f1": 0.45068027210884354,
+      "values": [
+        {
+          "value": "clean",
+          "support": 31,
+          "prediction_support": 18,
+          "precision": 1.0,
+          "recall": 0.5806451612903226,
+          "f1": 0.7346938775510204
+        },
+        {
+          "value": "unclean",
+          "support": 1,
+          "prediction_support": 11,
+          "precision": 0.09090909090909091,
+          "recall": 1.0,
+          "f1": 0.16666666666666666
+        }
+      ]
+    },
+    {
+      "attribute": "clothes pattern",
+      "support": 12,
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.375,
+      "values": [
+        {
+          "value": "dotted",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "floral",
+          "support": 1,
+          "prediction_support": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        {
+          "value": "lettered",
+          "support": 3,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "plaid",
+          "support": 1,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "plain",
+          "support": 7,
+          "prediction_support": 9,
+          "precision": 0.7777777777777778,
+          "recall": 1.0,
+          "f1": 0.875
+        },
+        {
+          "value": "striped",
+          "support": 0,
+          "prediction_support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "tiled",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "color quantity",
+      "support": 55,
+      "accuracy": 0.509090909090909,
+      "macro_f1": 0.30954248366013076,
+      "values": [
+        {
+          "value": "multicolored",
+          "support": 7,
+          "prediction_support": 10,
+          "precision": 0.2,
+          "recall": 0.2857142857142857,
+          "f1": 0.23529411764705882
+        },
+        {
+          "value": "single-colored",
+          "support": 32,
+          "prediction_support": 43,
+          "precision": 0.6046511627906976,
+          "recall": 0.8125,
+          "f1": 0.6933333333333334
+        },
+        {
+          "value": "two-colored",
+          "support": 16,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "cooked",
+      "support": 3,
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.6666666666666666,
+      "values": [
+        {
+          "value": "cooked",
+          "support": 1,
+          "prediction_support": 2,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666
+        },
+        {
+          "value": "raw",
+          "support": 2,
+          "prediction_support": 1,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        }
+      ]
+    },
+    {
+      "attribute": "face expression",
+      "support": 9,
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.32,
+      "values": [
+        {
+          "value": "angry",
+          "support": 0,
+          "prediction_support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "disgust",
+          "support": 1,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "fear",
+          "support": 1,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "happy",
+          "support": 2,
+          "prediction_support": 3,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        {
+          "value": "neutral",
+          "support": 5,
+          "prediction_support": 5,
+          "precision": 0.8,
+          "recall": 0.8,
+          "f1": 0.8
+        },
+        {
+          "value": "sad",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "sleepy",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "gender",
+      "support": 17,
+      "accuracy": 0.9411764705882353,
+      "macro_f1": 0.91005291005291,
+      "values": [
+        {
+          "value": "female",
+          "support": 4,
+          "prediction_support": 3,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571
+        },
+        {
+          "value": "male",
+          "support": 13,
+          "prediction_support": 14,
+          "precision": 0.9285714285714286,
+          "recall": 1.0,
+          "f1": 0.9629629629629629
+        }
+      ]
+    },
+    {
+      "attribute": "group",
+      "support": 100,
+      "accuracy": 0.53,
+      "macro_f1": 0.3661099913619349,
+      "values": [
+        {
+          "value": "group",
+          "support": 2,
+          "prediction_support": 44,
+          "precision": 0.022727272727272728,
+          "recall": 0.5,
+          "f1": 0.043478260869565216
+        },
+        {
+          "value": "single",
+          "support": 98,
+          "prediction_support": 53,
+          "precision": 0.9811320754716981,
+          "recall": 0.5306122448979592,
+          "f1": 0.6887417218543046
+        }
+      ]
+    },
+    {
+      "attribute": "hair color",
+      "support": 13,
+      "accuracy": 0.3076923076923077,
+      "macro_f1": 0.17424242424242425,
+      "values": [
+        {
+          "value": "black",
+          "support": 6,
+          "prediction_support": 5,
+          "precision": 0.4,
+          "recall": 0.3333333333333333,
+          "f1": 0.36363636363636365
+        },
+        {
+          "value": "blue",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "brown",
+          "support": 5,
+          "prediction_support": 7,
+          "precision": 0.2857142857142857,
+          "recall": 0.4,
+          "f1": 0.3333333333333333
+        },
+        {
+          "value": "gray",
+          "support": 0,
+          "prediction_support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "green",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "orange",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "pink",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "red",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "tan",
+          "support": 2,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "violet",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "white",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "yellow",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "hair length",
+      "support": 15,
+      "accuracy": 0.8,
+      "macro_f1": 0.4444444444444444,
+      "values": [
+        {
+          "value": "bald",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "long",
+          "support": 3,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "short",
+          "support": 12,
+          "prediction_support": 15,
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.8888888888888888
+        }
+      ]
+    },
+    {
+      "attribute": "hair tone",
+      "support": 17,
+      "accuracy": 0.7058823529411765,
+      "macro_f1": 0.6222222222222222,
+      "values": [
+        {
+          "value": "dark",
+          "support": 10,
+          "prediction_support": 15,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8
+        },
+        {
+          "value": "light",
+          "support": 7,
+          "prediction_support": 2,
+          "precision": 1.0,
+          "recall": 0.2857142857142857,
+          "f1": 0.4444444444444444
+        }
+      ]
+    },
+    {
+      "attribute": "hair type",
+      "support": 17,
+      "accuracy": 0.8235294117647058,
+      "macro_f1": 0.45161290322580644,
+      "values": [
+        {
+          "value": "curly",
+          "support": 1,
+          "prediction_support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "straight",
+          "support": 16,
+          "prediction_support": 15,
+          "precision": 0.9333333333333333,
+          "recall": 0.875,
+          "f1": 0.9032258064516129
+        }
+      ]
+    },
+    {
+      "attribute": "length",
+      "support": 8,
+      "accuracy": 0.0,
+      "macro_f1": 0.0,
+      "values": [
+        {
+          "value": "long",
+          "support": 8,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "short",
+          "support": 0,
+          "prediction_support": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "material",
+      "support": 58,
+      "accuracy": 0.46551724137931033,
+      "macro_f1": 0.36384907363168234,
+      "values": [
+        {
+          "value": "asphalt",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "ceramic",
+          "support": 4,
+          "prediction_support": 1,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4
+        },
+        {
+          "value": "glass",
+          "support": 12,
+          "prediction_support": 11,
+          "precision": 0.8181818181818182,
+          "recall": 0.75,
+          "f1": 0.782608695652174
+        },
+        {
+          "value": "leather",
+          "support": 5,
+          "prediction_support": 1,
+          "precision": 1.0,
+          "recall": 0.2,
+          "f1": 0.3333333333333333
+        },
+        {
+          "value": "metal",
+          "support": 14,
+          "prediction_support": 12,
+          "precision": 0.5833333333333334,
+          "recall": 0.5,
+          "f1": 0.5384615384615384
+        },
+        {
+          "value": "paper",
+          "support": 2,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "polymers",
+          "support": 11,
+          "prediction_support": 5,
+          "precision": 1.0,
+          "recall": 0.45454545454545453,
+          "f1": 0.625
+        },
+        {
+          "value": "stone",
+          "support": 0,
+          "prediction_support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "textile",
+          "support": 2,
+          "prediction_support": 19,
+          "precision": 0.05263157894736842,
+          "recall": 0.5,
+          "f1": 0.09523809523809523
+        },
+        {
+          "value": "wood",
+          "support": 8,
+          "prediction_support": 4,
+          "precision": 0.75,
+          "recall": 0.375,
+          "f1": 0.5
+        }
+      ]
+    },
+    {
+      "attribute": "maturity",
+      "support": 30,
+      "accuracy": 0.9,
+      "macro_f1": 0.8844672657252888,
+      "values": [
+        {
+          "value": "adult",
+          "support": 22,
+          "prediction_support": 19,
+          "precision": 1.0,
+          "recall": 0.8636363636363636,
+          "f1": 0.926829268292683
+        },
+        {
+          "value": "young",
+          "support": 8,
+          "prediction_support": 11,
+          "precision": 0.7272727272727273,
+          "recall": 1.0,
+          "f1": 0.8421052631578947
+        }
+      ]
+    },
+    {
+      "attribute": "optical property",
+      "support": 61,
+      "accuracy": 0.5081967213114754,
+      "macro_f1": 0.38439382037182507,
+      "values": [
+        {
+          "value": "opaque",
+          "support": 43,
+          "prediction_support": 24,
+          "precision": 0.875,
+          "recall": 0.4883720930232558,
+          "f1": 0.6268656716417911
+        },
+        {
+          "value": "reflective",
+          "support": 6,
+          "prediction_support": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "transparent",
+          "support": 12,
+          "prediction_support": 26,
+          "precision": 0.38461538461538464,
+          "recall": 0.8333333333333334,
+          "f1": 0.5263157894736842
+        }
+      ]
+    },
+    {
+      "attribute": "order",
+      "support": 12,
+      "accuracy": 0.4166666666666667,
+      "macro_f1": 0.29411764705882354,
+      "values": [
+        {
+          "value": "messy",
+          "support": 1,
+          "prediction_support": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "ordered",
+          "support": 11,
+          "prediction_support": 6,
+          "precision": 0.8333333333333334,
+          "recall": 0.45454545454545453,
+          "f1": 0.5882352941176471
+        }
+      ]
+    },
+    {
+      "attribute": "pattern",
+      "support": 41,
+      "accuracy": 0.8048780487804879,
+      "macro_f1": 0.5301120448179272,
+      "values": [
+        {
+          "value": "dotted",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "floral",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "lettered",
+          "support": 2,
+          "prediction_support": 1,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        },
+        {
+          "value": "plaid",
+          "support": 1,
+          "prediction_support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "plain",
+          "support": 34,
+          "prediction_support": 34,
+          "precision": 0.8823529411764706,
+          "recall": 0.8823529411764706,
+          "f1": 0.8823529411764706
+        },
+        {
+          "value": "striped",
+          "support": 4,
+          "prediction_support": 3,
+          "precision": 0.6666666666666666,
+          "recall": 0.5,
+          "f1": 0.5714285714285714
+        },
+        {
+          "value": "tiled",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "position",
+      "support": 78,
+      "accuracy": 0.6666666666666666,
+      "macro_f1": 0.6680426556587546,
+      "values": [
+        {
+          "value": "horizontal",
+          "support": 19,
+          "prediction_support": 19,
+          "precision": 0.631578947368421,
+          "recall": 0.631578947368421,
+          "f1": 0.631578947368421
+        },
+        {
+          "value": "sitting",
+          "support": 10,
+          "prediction_support": 20,
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666
+        },
+        {
+          "value": "vertical",
+          "support": 49,
+          "prediction_support": 36,
+          "precision": 0.8333333333333334,
+          "recall": 0.6122448979591837,
+          "f1": 0.7058823529411765
+        }
+      ]
+    },
+    {
+      "attribute": "size",
+      "support": 15,
+      "accuracy": 0.7333333333333333,
+      "macro_f1": 0.7222222222222222,
+      "values": [
+        {
+          "value": "big",
+          "support": 10,
+          "prediction_support": 8,
+          "precision": 0.875,
+          "recall": 0.7,
+          "f1": 0.7777777777777778
+        },
+        {
+          "value": "small",
+          "support": 5,
+          "prediction_support": 7,
+          "precision": 0.5714285714285714,
+          "recall": 0.8,
+          "f1": 0.6666666666666666
+        }
+      ]
+    },
+    {
+      "attribute": "state",
+      "support": 42,
+      "accuracy": 0.16666666666666666,
+      "macro_f1": 0.16812354312354313,
+      "values": [
+        {
+          "value": "closed",
+          "support": 5,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "covered",
+          "support": 2,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "cracked",
+          "support": 0,
+          "prediction_support": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "dilapidated",
+          "support": 0,
+          "prediction_support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "dry",
+          "support": 6,
+          "prediction_support": 6,
+          "precision": 0.3333333333333333,
+          "recall": 0.3333333333333333,
+          "f1": 0.3333333333333333
+        },
+        {
+          "value": "empty",
+          "support": 15,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "folded",
+          "support": 0,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "full",
+          "support": 8,
+          "prediction_support": 3,
+          "precision": 0.6666666666666666,
+          "recall": 0.25,
+          "f1": 0.36363636363636365
+        },
+        {
+          "value": "off",
+          "support": 1,
+          "prediction_support": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        {
+          "value": "on",
+          "support": 2,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "open",
+          "support": 1,
+          "prediction_support": 11,
+          "precision": 0.09090909090909091,
+          "recall": 1.0,
+          "f1": 0.16666666666666666
+        },
+        {
+          "value": "piece",
+          "support": 1,
+          "prediction_support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "wet",
+          "support": 1,
+          "prediction_support": 12,
+          "precision": 0.08333333333333333,
+          "recall": 1.0,
+          "f1": 0.15384615384615385
+        }
+      ]
+    },
+    {
+      "attribute": "texture",
+      "support": 67,
+      "accuracy": 0.7313432835820896,
+      "macro_f1": 0.2890855457227139,
+      "values": [
+        {
+          "value": "rough",
+          "support": 0,
+          "prediction_support": 9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        {
+          "value": "smooth",
+          "support": 58,
+          "prediction_support": 55,
+          "precision": 0.8909090909090909,
+          "recall": 0.8448275862068966,
+          "f1": 0.8672566371681416
+        },
+        {
+          "value": "soft",
+          "support": 9,
+          "prediction_support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      ]
+    },
+    {
+      "attribute": "tone",
+      "support": 67,
+      "accuracy": 0.6567164179104478,
+      "macro_f1": 0.5854166666666667,
+      "values": [
+        {
+          "value": "dark",
+          "support": 10,
+          "prediction_support": 25,
+          "precision": 0.28,
+          "recall": 0.7,
+          "f1": 0.4
+        },
+        {
+          "value": "light",
+          "support": 57,
+          "prediction_support": 39,
+          "precision": 0.9487179487179487,
+          "recall": 0.6491228070175439,
+          "f1": 0.7708333333333334
+        }
+      ]
+    }
+  ],
+  "failures": [
+    {
+      "im_file": "/Users/esbati.keivan/PycharmProjects/vlm-tasks/experiments/qwen3_attributes_validation_20261104/cache/ovad/images/val2017/000000000139.jpg",
+      "type": "ResponseConstraintError",
+      "message": "1 validation error for AttributePrediction\nattributes.hair type\n  Input should be 'curly' or 'straight' [type=literal_error, input_value='smooth', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/literal_error",
+      "sample_id": 0
+    },
+    {
+      "im_file": "/Users/esbati.keivan/PycharmProjects/vlm-tasks/experiments/qwen3_attributes_validation_20261104/cache/ovad/images/val2017/000000001993.jpg",
+      "type": "ResponseConstraintError",
+      "message": "1 validation error for AttributePrediction\nattributes.hair type\n  Input should be 'curly' or 'straight' [type=literal_error, input_value='smooth', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/literal_error",
+      "sample_id": 64
+    },
+    {
+      "im_file": "/Users/esbati.keivan/PycharmProjects/vlm-tasks/experiments/qwen3_attributes_validation_20261104/cache/ovad/images/val2017/000000002157.jpg",
+      "type": "ResponseConstraintError",
+      "message": "1 validation error for AttributePrediction\nattributes.hair color\n  Input should be 'black', 'blue', 'brown', 'gray', 'green', 'orange', 'pink', 'red', 'tan', 'violet', 'white' or 'yellow' [type=literal_error, input_value='clear', input_type=str]\n    For further information visit https://errors.pydantic.dev/2.14/v/literal_error",
+      "sample_id": 82
+    }
+  ],
+  "dataset_counts": {
+    "evaluated_objects": 100,
+    "evaluated_attribute_decisions": 769,
+    "evaluated_images": 17,
+    "evaluated_samples": 100
+  },
+  "dataset_metadata": {
+    "dataset_name": "ovad",
+    "config_name": "ovad",
+    "version": "1.0.0",
+    "description": "OVAD categorical object attributes (22 groups; excludes color and clothes color); not official mAP",
+    "split": "val"
+  },
+  "status_counts": {},
+  "task_settings": {},
+  "dataset_fingerprint_sha256": "a533c6e28d16a9e9afe1a79f4201a81c2a60acc11b0947eacdadbf0fb161c4b2",
+  "speed_ms_per_sample": {
+    "load": 1.1808904001372866,
+    "inference": 27547.830402900287,
+    "metrics": 0.03458668012171984
+  },
+  "elapsed_seconds": 2754.908235666,
+  "wall_seconds": 2754.908619833004,
+  "shared_model_load_seconds": 540.2366170840032,
+  "usage": {
+    "attempted_requests": 100,
+    "measured_requests": 100,
+    "unmeasured_requests": 0,
+    "input_tokens": 172600,
+    "output_tokens": 20671,
+    "total_tokens": 193271,
+    "estimated_cost_usd": null,
+    "reported_cost_usd": null,
+    "cost_note": "Local inference; electricity/hardware costs not measured"
+  }
+}

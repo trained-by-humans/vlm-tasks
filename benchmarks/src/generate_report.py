@@ -20,6 +20,7 @@ TABLE_HEADER = [
 ]
 MODEL_LABELS = {
     "Qwen/Qwen3-VL-2B-Instruct": "Qwen3-VL-2B",
+    "google/gemma-3-4b-it": "Gemma 3 4B",
     "google.gemma-3-27b-it": "Gemma 3 27B",
     "moonshotai.kimi-k3.1": "Kimi K3.1",
     "qwen.qwen3-vl-235b-a22b": "Qwen3-VL-235B",

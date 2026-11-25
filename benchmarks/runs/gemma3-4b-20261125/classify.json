@@ -1,0 +1,123 @@
+{
+  "task": "classify",
+  "dataset": "cifar10",
+  "model": "google/gemma-3-4b-it",
+  "task_spec_revision": 1,
+  "model_config_revision": 1,
+  "revision": "093f9f388b31de276ce2de164bdc2081324b9767",
+  "device": "mps",
+  "dtype": "bfloat16",
+  "retries": 0,
+  "execution_environment": "environment.json",
+  "completed_at": "2026-11-25T02:27:31.665632+00:00",
+  "metrics": {
+    "samples": 100,
+    "failures": 0,
+    "failure_rate": 0.0,
+    "accuracy_top1": 0.84
+  },
+  "summary": [
+    {
+      "class": "airplane",
+      "support": 10,
+      "precision": 1.0,
+      "recall": 0.7,
+      "f1": 0.8235294117647058
+    },
+    {
+      "class": "automobile",
+      "support": 6,
+      "precision": 0.7142857142857143,
+      "recall": 0.8333333333333334,
+      "f1": 0.7692307692307693
+    },
+    {
+      "class": "bird",
+      "support": 8,
+      "precision": 0.8333333333333334,
+      "recall": 0.625,
+      "f1": 0.7142857142857143
+    },
+    {
+      "class": "cat",
+      "support": 10,
+      "precision": 0.8181818181818182,
+      "recall": 0.9,
+      "f1": 0.8571428571428571
+    },
+    {
+      "class": "deer",
+      "support": 7,
+      "precision": 0.6666666666666666,
+      "recall": 0.8571428571428571,
+      "f1": 0.75
+    },
+    {
+      "class": "dog",
+      "support": 8,
+      "precision": 0.7272727272727273,
+      "recall": 1.0,
+      "f1": 0.8421052631578947
+    },
+    {
+      "class": "frog",
+      "support": 16,
+      "precision": 1.0,
+      "recall": 0.8125,
+      "f1": 0.896551724137931
+    },
+    {
+      "class": "horse",
+      "support": 11,
+      "precision": 0.8181818181818182,
+      "recall": 0.8181818181818182,
+      "f1": 0.8181818181818182
+    },
+    {
+      "class": "ship",
+      "support": 13,
+      "precision": 0.8571428571428571,
+      "recall": 0.9230769230769231,
+      "f1": 0.8888888888888888
+    },
+    {
+      "class": "truck",
+      "support": 11,
+      "precision": 0.9090909090909091,
+      "recall": 0.9090909090909091,
+      "f1": 0.9090909090909091
+    }
+  ],
+  "failures": [],
+  "dataset_counts": {
+    "evaluated_samples": 100
+  },
+  "dataset_metadata": {
+    "dataset_name": "cifar10",
+    "config_name": "plain_text",
+    "version": "0.0.0",
+    "split": "test"
+  },
+  "status_counts": {},
+  "task_settings": {},
+  "dataset_fingerprint_sha256": "0f9065c9b5c6a57004358971243940585aab5bfbc85a8deb7ae369766b901163",
+  "speed_ms_per_sample": {
+    "load": 0.4049049600143917,
+    "inference": 6253.704565809677,
+    "metrics": 0.06250876998819876
+  },
+  "elapsed_seconds": 625.4343674580014,
+  "wall_seconds": 625.4468841249982,
+  "shared_model_load_seconds": 540.2366170840032,
+  "usage": {
+    "attempted_requests": 100,
+    "measured_requests": 100,
+    "unmeasured_requests": 0,
+    "input_tokens": 52300,
+    "output_tokens": 1981,
+    "total_tokens": 54281,
+    "estimated_cost_usd": null,
+    "reported_cost_usd": null,
+    "cost_note": "Local inference; electricity/hardware costs not measured"
+  }
+}
