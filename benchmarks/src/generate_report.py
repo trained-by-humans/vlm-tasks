@@ -392,10 +392,23 @@ def generate_report(directory):
     current_charts = {}
     if chart_manifest.is_file():
         charts = json.loads(chart_manifest.read_text())
-        if (charts["reports_sha256"] == report_hashes
-                and charts.get("run_metadata_sha256", {}) == metadata_hashes
-                and [model["run"] for model in charts.get("models", [])] == ordered_runs(reports)):
+        chart_runs = {model["run"] for model in charts.get("models", [])}
+        chart_reports = [(path, report) for path, report in reports if path.parent.name in chart_runs]
+        chart_hashes = {str(path.relative_to(directory)): report_hashes[str(path.relative_to(directory))]
+                        for path, _ in chart_reports}
+        # New runs must not hide still-valid charts for the runs already rendered.
+        if (charts["reports_sha256"] == chart_hashes
+                and charts.get("run_metadata_sha256", {}) == run_metadata_hashes(chart_reports)
+                and [model["run"] for model in charts.get("models", [])] == ordered_runs(chart_reports)):
             current_charts = charts
+    if current_charts:
+        chart_runs = {model["run"] for model in current_charts.get("models", [])}
+        pending = [run for run in ordered_runs(reports) if run not in chart_runs]
+        if pending:
+            descriptions = [f"`{run}` ({len(model_rows[run])}/{len(DATASETS)} task reports)" for run in pending]
+            lines += ["Additional runs awaiting charts: " + "; ".join(descriptions)
+                      + ". Their available results appear in the task tables below; "
+                      "the overview and charts cover the previously rendered runs.", ""]
     if current_charts.get("task_comparisons"):
         lines += comparison_table(current_charts["task_comparisons"])
     lines += model_sections(model_rows, current_charts)

@@ -499,6 +499,41 @@ def test_report_views_share_newest_run_order_using_recorded_dates(comparison_run
     assert "reports/charts/model-profiles/" not in (tmp_path / "README.md").read_text()
 
 
+def test_report_keeps_valid_charts_while_another_run_is_incomplete(comparison_runs, tmp_path):
+    pytest.importorskip("matplotlib")
+    from benchmarks.src.artifacts import write_json
+    from benchmarks.src.generate_charts import generate_charts
+    from benchmarks.src.generate_report import generate_report
+
+    generate_charts(comparison_runs)
+    manifest_path = tmp_path / "reports/charts/manifest.json"
+    charts_before = manifest_path.read_bytes()
+    new = comparison_runs / "new-model"
+    write_json(new / "config.json", json.loads((comparison_runs / "small/config.json").read_text()))
+    sample = json.loads((comparison_runs / "small/classify.json").read_text())
+    write_json(new / "classify.json", {**sample, "model": "a-new-vlm"})
+
+    assert len(generate_report(comparison_runs)) == 22
+    page = (tmp_path / "README.md").read_text()
+    assert "## Model profiles" in page
+    assert "| Task | Main metric |" in page
+    assert "reports/charts/model-profiles/small.png" in page
+    assert "reports/charts/task-comparisons/classify.png" in page
+    assert "`new-model` (1/7 task reports)" in page
+    assert "runs/new-model/classify.json" in page
+    assert "reports/charts/model-profiles/new-model.png" not in page
+    assert manifest_path.read_bytes() == charts_before
+
+    # Changed observations within a charted run still invalidate its cached charts.
+    write_json(comparison_runs / "small/classify.json", {
+        **sample, "metrics": {**sample["metrics"], "accuracy_top1": .99},
+    })
+    generate_report(comparison_runs)
+    page = (tmp_path / "README.md").read_text()
+    assert "reports/charts/model-profiles/" not in page
+    assert "Top-1 Acc 99%" in page
+
+
 def test_undated_runs_sort_last_with_stable_ties(tmp_path):
     from benchmarks.src.generate_report import ordered_runs
 
